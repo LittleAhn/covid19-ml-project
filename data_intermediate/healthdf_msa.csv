@@ -1,0 +1,137 @@
+CBSA_ID,CBSA_Name_BRFSS,PercentAsthma,PercentObese,PercentBingeDrink,PercentCOPD,PercentCoronaryHeartDisease,PercentCurrentSmoker,PercentDepression,PercentDiabetes,PercentDifficultyErrandsAlone,PercentFluShot,PercentHealthCoverage,PercentOtherCancer,PercentSeatbeltUse,PercentSkinCancer,PercentStroke,PercentTooExpensiveToSeeDoctor
+10100,"Aberdeen, SD Micropolitan Statistical Area",7.07,28.63,15.59,6.46,4.12,16.27,16.05,12.1,3.35,67.25,90.35,11.6,81.47,4.46,,7.74
+10580,"Albany-Schenectady-Troy, NY Metropolitan Statistical Area",9.89,28.48,15.62,7.09,4.91,15.77,24.01,11.06,6.93,58.6,93.11,7.14,96.63,3.4,3.6,9.37
+10740,"Albuquerque, NM Metropolitan Statistical Area",9.99,26.81,14.24,6.18,2.52,16.73,22.02,9.13,8.04,58.85,88.37,6.61,96.54,6.52,2.29,13.24
+10900,"Allentown-Bethlehem-Easton, PA-NJ Metropolitan Statistical Area",10.62,31.72,16.15,6.48,4.09,18.56,19.19,11.43,6.19,73.03,93.5,8.67,92.97,6.68,3.5,14.32
+11260,"Anchorage, AK Metropolitan Statistical Area",9.41,36.27,17.4,5.97,3.06,19.74,19.64,7.43,5.66,53.61,89.55,7.1,95.56,3.71,1.58,12.72
+12060,"Atlanta-Sandy Springs-Roswell, GA Metropolitan Statistical Area",7.74,29.85,13.61,5.15,2.76,14.93,15.49,10.35,5.24,63.28,83.73,5.41,95.99,4.69,3.19,16.2
+12260,"Augusta-Richmond County, GA-SC Metropolitan Statistical Area",7.76,37.55,13.43,7.57,6.03,16.74,21.97,13.45,8.51,58.94,85.46,6.83,96.49,7.07,3.89,11.51
+12420,"Austin-Round Rock, TX Metropolitan Statistical Area",7.52,29.25,22.93,3.09,2.45,12.49,16.69,9.59,5.26,63.42,81.78,5.62,98.29,4.84,2.64,12.83
+12580,"Baltimore-Columbia-Towson, MD Metropolitan Statistical Area",10.3,31.07,17.11,6.2,3.4,15.42,19.48,10.32,6.11,66.38,94.01,6.55,95.81,5.89,2.61,9.64
+12940,"Baton Rouge, LA Metropolitan Statistical Area",9.25,33.03,20.49,7.1,4.62,21.69,19.43,11.16,7.15,58.29,88.93,6.86,94.58,3.84,4.55,14.71
+13740,"Billings, MT Metropolitan Statistical Area",11.38,25.67,19.74,5.93,3.23,17.38,19.87,7.15,7.69,62.54,90.36,8.03,89.03,6.52,3.09,9.48
+13820,"Birmingham-Hoover, AL Metropolitan Statistical Area",10.3,37.73,12.14,9.7,4.45,19.7,24.44,13.88,9.95,60.12,87.59,7.14,94.88,7.33,4.35,15.27
+13900,"Bismarck, ND Metropolitan Statistical Area",10.58,30.72,20.75,4.63,4.16,18.84,17.46,9.2,5.68,60.35,93.7,6.95,91.03,4.72,2.75,7.11
+14260,"Boise City, ID Metropolitan Statistical Area",8.03,29.98,15.55,3.82,3.12,12.66,20.71,8.64,4.62,62.97,84.17,6.42,95.36,8.79,2.62,12.41
+14454,"Boston, MA Metropolitan Division",12.18,25.55,19.23,4.77,3.03,15.51,15.71,8.7,5.77,51.63,93.29,7.38,88.39,6.6,3.59,10.54
+15380,"Buffalo-Cheektowaga-Niagara Falls, NY Metropolitan Statistical Area",10.56,29.68,26.45,7.84,5.32,20.38,17.1,12.16,5.03,57.37,94.28,8.01,94.79,4.02,2.58,10.2
+15540,"Burlington-South Burlington, VT Metropolitan Statistical Area",11.38,27.91,18.96,4.46,3.61,13.88,25.28,7.21,5.38,66.94,95.34,6.36,94.47,7.44,1.16,8.27
+15764,"Cambridge-Newton-Framingham, MA Metropolitan Division",10.23,23.81,19.72,4.26,2.89,9.25,16.41,9.76,5.15,58.74,95.82,6.98,91.07,6.3,2.0,7.49
+15804,"Camden, NJ Metropolitan Division",9.96,32.39,16.73,7.29,4.3,16.81,17.54,12.97,9.34,68.15,91.84,6.69,92.67,6.14,3.78,13.48
+16300,"Cedar Rapids, IA Metropolitan Statistical Area",7.54,34.18,22.91,5.32,3.73,18.08,20.84,8.43,5.21,71.37,94.66,9.33,96.41,6.66,2.83,8.54
+16620,"Charleston, WV Metropolitan Statistical Area",9.77,40.59,11.51,13.55,7.73,24.77,28.38,19.21,14.63,71.86,92.69,7.61,93.37,8.48,6.45,16.65
+16700,"Charleston-North Charleston, SC Metropolitan Statistical Area",9.72,32.11,22.62,5.99,3.94,18.85,22.46,12.67,5.89,63.92,85.56,7.49,95.35,7.42,3.1,14.02
+16740,"Charlotte-Concord-Gastonia, NC-SC Metropolitan Statistical Area",9.83,33.8,17.86,7.61,3.22,14.57,18.75,10.97,6.31,68.53,85.8,7.39,96.32,7.05,3.71,14.7
+16980,"Chicago-Naperville-Elgin, IL-IN-WI Metropolitan Statistical Area",7.8,30.13,19.88,6.14,3.5,13.6,16.34,10.25,6.02,55.39,88.08,5.59,95.72,3.88,2.75,12.48
+17140,"Cincinnati, OH-KY-IN Metropolitan Statistical Area",8.22,30.01,21.44,8.04,5.08,23.49,24.45,9.3,8.67,64.27,91.75,5.69,92.46,6.07,3.37,13.31
+17200,"Claremont-Lebanon, NH-VT Micropolitan Statistical Area",13.95,26.73,17.33,8.19,3.24,15.74,23.8,7.83,7.32,62.81,93.63,7.03,86.33,8.36,2.58,9.49
+17460,"Cleveland-Elyria, OH Metropolitan Statistical Area",10.73,32.74,21.93,7.17,4.19,21.89,21.6,11.31,8.19,63.8,93.83,7.21,90.81,5.49,4.12,12.11
+17780,"College Station-Bryan, TX Metropolitan Statistical Area",,30.77,24.22,,1.64,,13.38,7.46,,70.67,85.81,7.74,92.1,,,16.92
+17820,"Colorado Springs, CO Metropolitan Statistical Area",10.51,22.8,15.62,4.44,3.12,16.09,19.45,6.75,6.18,68.53,91.4,7.26,96.5,6.82,1.84,12.35
+17900,"Columbia, SC Metropolitan Statistical Area",9.45,35.73,17.16,7.13,3.82,16.91,19.98,12.4,4.98,65.03,87.65,6.69,95.77,5.63,3.1,16.85
+18140,"Columbus, OH Metropolitan Statistical Area",9.13,32.45,20.06,7.52,3.12,20.31,22.79,9.34,5.94,65.08,92.19,6.44,92.74,5.93,2.86,10.4
+18580,"Corpus Christi, TX Metropolitan Statistical Area",7.4,37.27,17.14,6.67,4.11,16.34,20.7,15.28,11.37,56.94,77.86,6.28,95.11,4.12,3.97,21.46
+18880,"Crestview-Fort Walton Beach-Destin, FL Metropolitan Statistical Area",6.63,28.54,12.77,9.21,4.45,22.44,16.3,13.08,8.5,57.7,83.24,8.02,95.35,10.31,3.24,13.58
+19124,"Dallas-Plano-Irving, TX Metropolitan Division",9.08,28.39,16.9,2.8,,13.12,14.19,10.82,7.14,53.65,83.07,3.9,96.28,5.66,,15.45
+19380,"Dayton, OH Metropolitan Statistical Area",9.18,35.09,18.9,9.26,5.15,19.77,25.45,12.75,9.1,67.0,93.86,7.79,92.63,7.38,4.31,9.01
+19660,"Deltona-Daytona Beach-Ormond Beach, FL Metropolitan Statistical Area",9.39,30.78,14.06,12.06,5.27,19.18,18.61,12.96,8.42,62.29,83.23,11.43,96.44,11.57,3.56,19.05
+19740,"Denver-Aurora-Lakewood, CO Metropolitan Statistical Area",9.08,22.06,20.62,3.65,2.41,13.76,17.64,7.48,4.41,67.88,88.91,5.78,96.01,6.2,2.26,12.69
+19780,"Des Moines-West Des Moines, IA Metropolitan Statistical Area",8.95,34.44,21.51,5.59,2.88,14.42,20.09,8.35,6.22,70.55,92.27,5.04,95.64,6.33,2.89,7.19
+20260,"Duluth, MN-WI Metropolitan Statistical Area",8.79,26.38,23.52,4.57,4.36,21.54,19.93,7.81,6.14,58.24,90.4,8.04,96.15,5.54,3.35,9.3
+21340,"El Paso, TX Metropolitan Statistical Area",7.32,34.66,19.22,,2.63,10.85,15.81,14.6,5.88,61.63,70.41,,97.45,,,22.04
+21780,"Evansville, IN-KY Metropolitan Statistical Area",10.64,31.48,17.63,8.86,3.85,22.99,29.76,12.76,11.0,61.79,91.7,7.01,92.51,6.94,3.02,15.35
+22020,"Fargo, ND-MN Metropolitan Statistical Area",6.83,29.01,26.22,4.35,3.17,16.68,22.38,7.39,4.29,62.84,91.73,5.71,94.03,4.87,1.63,7.49
+22220,"Fayetteville-Springdale-Rogers, AR-MO Metropolitan Statistical Area",5.87,32.71,15.48,6.65,5.05,17.07,22.57,7.92,5.06,61.4,89.94,4.3,97.22,7.29,,12.93
+22500,"Florence, SC Metropolitan Statistical Area",7.52,37.42,10.38,13.59,7.05,21.26,24.01,16.25,9.16,63.99,84.51,7.48,93.29,6.54,4.71,15.29
+23060,"Fort Wayne, IN Metropolitan Statistical Area",10.69,33.94,15.46,7.76,5.77,21.11,24.74,10.92,7.48,46.29,88.62,6.47,94.68,3.87,3.34,12.65
+23104,"Fort Worth-Arlington, TX Metropolitan Division",9.05,36.71,16.71,5.97,4.29,15.8,17.63,9.72,6.82,62.13,80.54,4.29,97.01,6.29,,17.79
+23540,"Gainesville, FL Metropolitan Statistical Area",6.4,30.81,15.06,3.87,3.98,13.01,21.03,11.78,4.59,62.66,84.73,3.9,94.13,8.2,,14.71
+24220,"Grand Forks, ND-MN Metropolitan Statistical Area",6.88,35.19,25.09,5.89,5.85,14.04,20.4,8.12,5.74,68.24,94.07,7.74,92.65,3.14,3.31,9.22
+24260,"Grand Island, NE Metropolitan Statistical Area",6.32,36.63,14.99,5.7,4.97,16.08,19.66,11.24,6.77,70.38,84.23,7.64,87.29,6.77,3.35,15.29
+24340,"Grand Rapids-Wyoming, MI Metropolitan Statistical Area",10.01,32.29,19.88,6.77,2.69,14.49,24.96,10.03,7.24,58.75,91.93,5.52,94.49,6.42,3.68,11.93
+24860,"Greenville-Anderson-Mauldin, SC Metropolitan Statistical Area",9.94,31.85,12.6,7.73,5.22,17.62,19.76,11.58,7.88,60.75,85.07,6.86,96.05,7.03,3.18,13.95
+25180,"Hagerstown-Martinsburg, MD-WV Metropolitan Statistical Area",14.43,37.67,15.15,11.31,4.69,21.06,21.72,14.33,7.44,66.82,91.14,8.38,93.04,6.61,3.97,10.09
+25540,"Hartford-West Hartford-East Hartford, CT Metropolitan Statistical Area",11.35,27.03,13.99,5.36,3.39,11.04,18.38,9.71,6.07,62.68,92.83,6.74,95.57,5.85,2.34,9.99
+25940,"Hilton Head Island-Bluffton-Beaufort, SC Metropolitan Statistical Area",5.34,25.11,18.85,6.03,4.07,13.28,16.06,10.04,4.0,71.37,86.2,9.24,95.93,10.75,3.03,16.1
+26420,"Houston-The Woodlands-Sugar Land, TX Metropolitan Statistical Area",5.91,30.97,18.79,3.99,3.51,15.07,16.05,10.03,8.07,63.23,70.97,4.86,95.83,3.86,3.72,21.51
+26580,"Huntington-Ashland, WV-KY-OH Metropolitan Statistical Area",14.96,38.47,10.12,16.53,7.78,24.25,27.96,14.17,12.89,68.86,93.29,8.96,93.79,6.41,5.28,10.7
+26900,"Indianapolis-Carmel-Anderson, IN Metropolitan Statistical Area",9.98,31.95,17.13,7.24,4.17,19.37,22.57,11.78,7.57,59.13,90.25,6.85,93.79,6.57,3.39,12.25
+27140,"Jackson, MS Metropolitan Statistical Area",6.88,35.21,12.83,5.66,4.51,15.8,17.59,13.34,9.33,57.56,82.33,6.9,97.09,4.73,3.01,15.7
+27260,"Jacksonville, FL Metropolitan Statistical Area",12.73,33.21,17.34,11.27,5.47,18.41,22.53,12.74,9.87,65.3,88.44,7.38,95.29,8.75,2.93,16.59
+27980,"Kahului-Wailuku-Lahaina, HI Metropolitan Statistical Area",10.92,23.35,20.62,3.55,3.44,12.04,12.43,10.82,5.38,51.94,92.2,7.29,97.14,6.6,1.88,7.34
+28140,"Kansas City, MO-KS Metropolitan Statistical Area",8.49,31.16,20.68,5.98,3.81,17.05,20.45,9.65,6.45,60.57,87.51,6.38,94.86,6.99,3.38,12.18
+28700,"Kingsport-Bristol-Bristol, TN-VA Metropolitan Statistical Area",14.69,29.81,9.79,17.28,7.05,31.66,29.69,16.86,11.34,52.07,83.62,9.45,92.03,9.29,4.85,14.78
+28940,"Knoxville, TN Metropolitan Statistical Area",11.65,30.95,13.33,10.03,5.05,27.26,24.71,11.21,9.3,57.7,87.73,8.01,95.23,10.16,4.55,13.6
+29620,"Lansing-East Lansing, MI Metropolitan Statistical Area",9.26,31.8,21.27,5.96,5.63,20.21,23.71,10.6,9.27,64.16,92.28,7.64,97.39,6.4,4.31,9.27
+30460,"Lexington-Fayette, KY Metropolitan Statistical Area",12.13,31.97,18.0,7.31,4.41,18.62,16.52,9.77,6.01,66.14,93.92,8.25,93.48,8.76,,11.22
+30700,"Lincoln, NE Metropolitan Statistical Area",9.89,28.9,24.24,5.53,3.5,12.21,20.71,8.25,3.74,68.35,89.76,6.43,92.3,5.84,2.31,11.03
+30780,"Little Rock-North Little Rock-Conway, AR Metropolitan Statistical Area",9.45,35.35,18.16,7.03,5.25,24.82,23.26,11.05,9.54,61.52,88.22,8.25,95.22,7.52,3.47,18.86
+31080,"Los Angeles-Long Beach-Anaheim, CA Metropolitan Statistical Area",7.5,24.01,16.8,3.41,2.65,11.74,16.22,10.11,5.06,59.57,88.73,5.01,97.02,5.66,1.65,13.64
+31140,"Louisville/Jefferson County, KY-IN Metropolitan Statistical Area",11.05,30.06,15.61,10.86,5.4,22.66,21.87,12.37,8.12,60.45,91.35,7.92,93.32,6.62,4.85,12.44
+31740,"Manhattan, KS Metropolitan Statistical Area",8.48,24.22,23.26,4.79,2.75,12.07,18.29,6.63,5.57,65.75,91.71,4.87,94.48,4.82,1.96,8.42
+32820,"Memphis, TN-MS-AR Metropolitan Statistical Area",8.05,37.21,12.12,6.02,2.86,20.07,17.45,11.57,8.36,49.26,82.94,5.84,92.31,4.16,4.97,14.16
+33100,"Miami-Fort Lauderdale-West Palm Beach, FL Metropolitan Statistical Area",5.81,27.03,15.61,4.5,3.7,13.59,13.29,8.52,5.93,62.96,85.26,5.91,96.19,6.36,3.19,16.93
+33340,"Milwaukee-Waukesha-West Allis, WI Metropolitan Statistical Area",9.0,29.06,21.03,5.0,3.65,14.49,19.28,10.32,6.75,49.8,92.76,7.0,93.34,4.43,2.26,11.36
+33460,"Minneapolis-St. Paul-Bloomington, MN-WI Metropolitan Statistical Area",7.22,26.02,20.48,3.87,3.04,13.21,19.2,6.74,4.75,65.66,92.13,6.34,97.27,5.7,2.01,10.12
+33500,"Minot, ND Micropolitan Statistical Area",9.63,34.56,18.36,5.51,3.36,19.08,24.31,8.38,3.21,58.52,87.77,6.05,88.23,3.68,2.13,8.5
+33874,"Montgomery County-Bucks County-Chester County, PA Metropolitan Division",9.93,24.98,20.66,3.67,5.98,9.98,16.19,7.8,4.16,64.35,94.59,8.85,94.97,7.65,,9.34
+34820,"Myrtle Beach-Conway-North Myrtle Beach, SC-NC Metropolitan Statistical Area",6.76,29.49,13.61,9.73,6.4,20.53,21.58,12.95,10.13,64.97,84.27,9.75,96.69,10.85,3.82,16.85
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN Metropolitan Statistical Area",8.53,28.17,14.5,6.35,3.73,15.9,21.24,11.78,5.69,53.32,88.23,7.44,94.04,5.43,3.67,14.76
+35004,"Nassau County-Suffolk County, NY Metropolitan Division",7.05,26.78,15.93,4.49,4.32,10.52,13.61,9.66,5.72,60.52,92.94,5.9,97.06,5.89,2.94,11.76
+35084,"Newark, NJ-PA Metropolitan Division",9.23,24.94,15.94,4.95,3.22,12.18,13.96,8.98,6.77,63.4,88.43,7.27,95.43,4.09,2.32,12.65
+35380,"New Orleans-Metairie, LA Metropolitan Statistical Area",9.11,36.07,19.52,10.4,4.39,21.72,20.65,15.26,10.49,56.84,89.79,6.43,95.56,5.9,3.86,19.15
+35614,"New York-Jersey City-White Plains, NY-NJ Metropolitan Division",8.03,23.58,16.53,4.46,3.39,12.27,13.76,10.47,6.21,55.69,88.14,5.41,92.07,3.5,2.04,13.4
+35820,"North Platte, NE Micropolitan Statistical Area",9.28,34.99,18.21,7.86,4.4,19.26,19.75,11.05,6.66,61.21,89.02,8.54,82.73,4.77,4.7,13.51
+35840,"North Port-Sarasota-Bradenton, FL Metropolitan Statistical Area",6.03,25.18,16.63,7.13,5.33,16.03,16.0,9.12,7.69,57.84,84.61,8.15,96.43,12.77,3.71,12.47
+36084,"Oakland-Hayward-Berkeley, CA Metropolitan Division",9.08,20.92,19.01,4.53,,8.83,13.63,6.92,4.14,60.64,90.95,6.42,98.15,5.56,,9.75
+36260,"Ogden-Clearfield, UT Metropolitan Statistical Area",10.02,28.92,10.73,4.45,3.2,9.51,24.02,7.7,4.77,56.65,89.14,5.14,95.63,8.68,2.28,12.57
+36420,"Oklahoma City, OK Metropolitan Statistical Area",8.8,34.55,14.72,7.23,5.12,17.13,23.14,12.09,9.92,70.39,84.21,7.04,94.92,5.88,3.38,17.63
+36540,"Omaha-Council Bluffs, NE-IA Metropolitan Statistical Area",7.89,33.27,20.64,5.94,3.53,16.6,20.61,10.26,6.1,67.27,88.68,5.7,91.63,5.45,2.79,11.94
+36740,"Orlando-Kissimmee-Sanford, FL Metropolitan Statistical Area",7.84,26.36,13.77,6.36,4.01,12.87,16.94,10.21,7.87,57.23,82.47,6.79,96.28,6.28,3.1,15.99
+37460,"Panama City, FL Metropolitan Statistical Area",8.09,26.84,10.44,8.97,4.62,22.77,22.75,13.42,12.35,56.99,78.64,8.44,89.0,9.2,4.76,21.28
+37860,"Pensacola-Ferry Pass-Brent, FL Metropolitan Statistical Area",6.39,28.79,16.75,7.16,1.52,19.95,24.33,9.86,6.43,62.15,80.96,7.25,92.66,7.48,5.08,15.08
+37964,"Philadelphia, PA Metropolitan Division",10.52,31.96,21.73,6.74,4.59,19.77,21.31,11.35,9.42,64.53,91.21,7.29,88.44,3.26,3.67,12.33
+38060,"Phoenix-Mesa-Scottsdale, AZ Metropolitan Statistical Area",9.88,29.35,15.98,5.89,3.4,14.84,18.48,10.2,6.48,56.57,86.77,6.85,94.67,7.71,2.76,13.95
+38300,"Pittsburgh, PA Metropolitan Statistical Area",7.53,31.09,19.38,7.08,5.25,21.26,18.93,10.28,6.36,65.78,94.48,7.72,90.17,6.33,2.95,9.15
+38860,"Portland-South Portland, ME Metropolitan Statistical Area",9.27,24.27,18.73,5.59,4.19,13.7,23.3,9.2,5.21,65.78,91.85,9.35,96.32,8.64,2.3,10.68
+38900,"Portland-Vancouver-Hillsboro, OR-WA Metropolitan Statistical Area",9.99,27.18,16.51,4.49,3.1,14.61,23.05,8.9,6.32,60.4,91.48,7.05,97.8,6.91,2.51,12.87
+38940,"Port St. Lucie, FL Metropolitan Statistical Area",5.5,25.61,11.94,8.54,5.8,16.42,18.25,11.34,7.85,59.11,81.09,7.0,96.34,9.49,4.07,15.54
+39300,"Providence-Warwick, RI-MA Metropolitan Statistical Area",12.54,31.6,17.24,8.23,4.57,15.32,23.71,9.87,8.2,63.58,93.97,7.91,94.47,6.28,3.13,11.45
+39340,"Provo-Orem, UT Metropolitan Statistical Area",7.31,23.12,4.77,2.18,2.0,4.2,20.75,5.68,3.76,57.24,88.98,5.19,96.34,5.28,1.66,12.48
+39660,"Rapid City, SD Metropolitan Statistical Area",7.25,35.26,14.57,4.46,3.99,19.76,20.78,11.02,5.5,60.44,91.92,6.95,88.45,7.67,2.32,11.51
+39900,"Reno, NV Metropolitan Statistical Area",10.62,23.97,20.59,7.17,3.57,14.68,19.49,7.67,5.98,56.11,90.39,7.19,95.04,8.89,3.98,17.11
+40060,"Richmond, VA Metropolitan Statistical Area",7.21,31.62,18.57,7.44,4.64,17.35,20.84,10.86,7.37,60.76,89.82,5.74,93.67,6.32,3.59,14.25
+40140,"Riverside-San Bernardino-Ontario, CA Metropolitan Statistical Area",5.49,31.8,19.33,6.62,2.94,11.06,18.67,13.67,6.8,55.16,88.38,5.83,98.57,4.63,2.82,12.47
+40340,"Rochester, MN Metropolitan Statistical Area",8.83,30.5,15.67,5.44,3.81,12.41,19.17,9.2,3.62,73.58,92.31,5.77,97.49,6.95,2.19,8.29
+40380,"Rochester, NY Metropolitan Statistical Area",11.63,28.82,15.52,6.47,4.99,17.26,23.95,11.45,6.18,71.2,90.24,6.57,94.37,5.21,,12.4
+40484,"Rockingham County-Strafford County, NH Metropolitan Division",13.84,25.84,18.33,6.27,3.47,14.03,22.9,7.77,6.24,61.13,93.35,8.91,86.09,5.95,2.08,9.61
+40900,"Sacramento--Roseville--Arden-Arcade, CA Metropolitan Statistical Area",11.22,27.9,17.63,5.9,1.95,9.45,19.74,10.21,5.94,69.8,92.48,6.91,98.45,6.23,3.07,7.8
+41060,"St. Cloud, MN Metropolitan Statistical Area",8.04,29.54,22.88,2.75,2.92,16.29,22.45,8.75,4.97,55.31,92.6,6.99,94.56,5.52,1.98,10.35
+41180,"St. Louis, MO-IL Metropolitan Statistical Area",10.14,31.26,21.22,7.38,4.37,19.35,21.55,11.0,8.2,66.75,91.27,9.21,93.05,5.94,3.32,12.33
+41460,"Salina, KS Micropolitan Statistical Area",8.75,33.46,17.79,8.13,3.8,20.18,22.79,10.16,8.35,47.63,86.98,7.88,95.13,8.13,6.0,14.76
+41540,"Salisbury, MD-DE Metropolitan Statistical Area",8.97,33.02,13.16,8.46,5.47,18.27,20.18,11.79,8.08,63.75,89.32,8.93,96.95,8.97,4.3,10.61
+41620,"Salt Lake City, UT Metropolitan Statistical Area",9.29,24.94,15.71,4.08,2.37,10.38,23.77,7.31,4.78,61.2,86.86,5.77,96.59,6.68,2.12,14.37
+41700,"San Antonio-New Braunfels, TX Metropolitan Statistical Area",6.51,30.67,19.16,7.19,5.02,17.87,21.35,13.01,9.13,70.06,72.07,8.64,94.93,4.19,,18.65
+41980,"San Juan-Carolina-Caguas, PR Metropolitan Statistical Area",11.67,32.41,12.26,4.52,6.7,11.66,18.52,16.14,14.3,41.52,93.64,4.13,97.43,0.92,2.72,14.26
+42420,"Scottsbluff, NE Micropolitan Statistical Area",6.92,35.33,13.26,6.51,4.36,22.27,23.14,14.66,8.05,55.76,82.32,8.73,86.94,5.88,2.97,16.47
+42644,"Seattle-Bellevue-Everett, WA Metropolitan Division",8.63,23.18,16.47,3.79,2.66,10.35,21.55,7.49,4.31,69.18,91.08,6.51,97.63,6.02,2.47,10.9
+43524,"Silver Spring-Frederick-Rockville, MD Metropolitan Division",6.75,21.31,13.52,3.47,2.43,8.69,16.82,8.13,3.26,75.62,88.09,5.75,96.64,5.66,1.54,10.74
+43580,"Sioux City, IA-NE-SD Metropolitan Statistical Area",7.15,29.7,17.89,5.3,4.48,19.64,20.36,8.7,3.89,63.87,90.52,7.27,95.19,4.49,3.16,13.01
+43620,"Sioux Falls, SD Metropolitan Statistical Area",5.75,29.05,19.39,4.42,4.7,20.34,18.03,8.75,6.02,69.12,85.72,6.38,88.14,3.24,1.97,7.79
+43780,"South Bend-Mishawaka, IN-MI Metropolitan Statistical Area",3.25,32.93,19.15,7.41,4.93,21.13,23.07,8.76,5.28,63.05,88.1,9.4,96.5,5.51,3.58,10.39
+43900,"Spartanburg, SC Metropolitan Statistical Area",7.97,34.65,11.64,8.31,2.75,18.25,23.4,11.59,9.41,56.99,85.41,6.75,98.14,5.47,4.23,17.39
+44060,"Spokane-Spokane Valley, WA Metropolitan Statistical Area",11.49,27.91,13.71,7.15,3.1,16.86,24.61,7.58,7.04,56.18,93.48,8.88,96.78,6.51,2.46,10.11
+44140,"Springfield, MA Metropolitan Statistical Area",11.5,24.19,20.83,5.97,4.48,18.49,23.12,7.64,11.99,54.68,93.86,7.28,90.36,6.1,,15.0
+45220,"Tallahassee, FL Metropolitan Statistical Area",6.94,32.25,18.74,5.05,3.21,13.98,15.72,8.71,4.79,67.96,89.77,5.09,95.08,8.54,2.38,13.04
+45300,"Tampa-St. Petersburg-Clearwater, FL Metropolitan Statistical Area",8.67,26.02,16.5,8.38,5.58,18.39,16.63,9.2,9.24,63.86,84.19,9.85,96.85,9.42,4.22,16.46
+45780,"Toledo, OH Metropolitan Statistical Area",9.6,41.28,21.99,8.55,6.54,19.82,25.95,12.41,9.08,58.75,93.5,5.55,89.85,5.63,3.34,13.14
+45820,"Topeka, KS Metropolitan Statistical Area",10.28,37.06,16.25,7.89,4.57,20.75,23.74,12.43,6.4,61.76,90.23,7.63,94.0,7.87,2.88,9.67
+46140,"Tulsa, OK Metropolitan Statistical Area",9.61,36.03,14.71,8.13,4.13,19.95,24.59,11.7,7.66,68.79,84.25,6.79,94.43,6.68,4.84,15.32
+46220,"Tuscaloosa, AL Metropolitan Statistical Area",9.09,36.79,12.47,10.2,3.0,19.85,26.32,11.44,13.15,59.88,86.05,6.94,96.14,6.19,2.52,14.17
+47260,"Virginia Beach-Norfolk-Newport News, VA-NC Metropolitan Statistical Area",10.68,32.39,19.01,6.11,3.84,16.21,19.55,12.08,5.81,69.31,88.16,6.87,95.01,5.33,3.86,15.38
+47664,"Warren-Troy-Farmington Hills, MI Metropolitan Division",9.93,28.32,18.94,7.06,5.23,16.56,19.75,10.06,7.43,60.72,93.94,8.97,95.52,6.0,3.04,10.15
+47894,"Washington-Arlington-Alexandria, DC-VA-MD-WV Metropolitan Division",7.76,27.63,16.27,4.67,2.63,11.15,14.19,7.68,4.56,64.73,90.57,5.58,96.29,4.75,2.57,11.06
+48620,"Wichita, KS Metropolitan Statistical Area",9.0,33.94,15.56,6.18,4.25,18.73,22.6,11.33,6.69,55.25,86.75,7.4,94.61,4.86,2.76,13.61
+48660,"Wichita Falls, TX Metropolitan Statistical Area",,42.56,20.84,,11.03,22.72,22.83,22.3,7.84,41.75,81.11,6.81,98.77,6.84,,25.78
+48864,"Wilmington, DE-MD-NJ Metropolitan Division",11.1,31.73,15.12,7.85,3.66,17.1,19.73,10.45,7.98,64.38,91.61,6.99,95.34,6.22,3.25,12.97
+49340,"Worcester, MA-CT Metropolitan Statistical Area",14.98,28.48,17.34,7.73,4.08,15.32,21.1,11.14,9.13,57.09,93.1,8.3,93.71,4.2,3.6,8.77

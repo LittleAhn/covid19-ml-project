@@ -12,8 +12,7 @@ from os.path import join, abspath, dirname
 NAICS_ENDPOINT = r"https://api.census.gov/data/2017/cbp?get=NAICS2017,NAICS2017_LABEL,GEO_ID,EMP&for=county:*"
 ACS_ENDPOINT = r"https://api.census.gov/data/2018/acs/acs5/subject?get=NAME,VARS&for=county:*"
 ROOT = join(dirname(dirname(abspath(__file__))))
-OUTPATH = join(ROOT, 'data', 'clean_features')
-ACS_VARS = join(ROOT, 'data_raw', 'acs_vars.txt')
+OUTPATH = join(ROOT, 'data_intermediate')
 
 
 
@@ -32,6 +31,7 @@ def write(df, fn):
 	"""
 
 	df.to_csv(join(OUTPATH, fn), index=False)
+	
 
 
 ### ACS functions
@@ -147,7 +147,7 @@ def acs_feature_creating(df):
 
 def execute_ACS():
 	"""
-
+	Executes steps required to pull ACS
 	"""
 
 	final_df = pd.DataFrame()
@@ -176,32 +176,29 @@ def clean_NAICS(df):
 	df.columns = df.iloc[0]
 	df = df[1:]
 	df['EMP'] = df['EMP'].astype(int)
-	df['FIPS'] = df['GEO_ID'].str[-5:]
+	df['fips'] = df['GEO_ID'].str[-5:]
 	df.rename({'NAICS2017': 'Industry', 
 	               'NAICS2017_LABEL': 'Industry_Label'}, axis=1, inplace=True)
 
 	return df
 
 
-
-
-
 def merge_on_totals(df, level):
 
-	totals = df.loc[df['Industry']=='00', ['FIPS', 'EMP']]
+	totals = df.loc[df['Industry']=='00', ['fips', 'EMP']]
 	secs = df[df['Industry'].str.len()==level]
-	merged = secs.merge(totals, how='left', left_on='FIPS', right_on='FIPS')
+	merged = secs.merge(totals, how='left', left_on='fips', right_on='fips')
 	merged.rename({'EMP_x': "employee_num",
                'EMP_y': 'employee_num_county'}, axis=1, inplace=True)
 	merged = merged[merged['Industry'] != '00']
 	merged = merged[(['Industry', 'Industry_Label', 'employee_num', 
-				   'employee_num_county', 'FIPS', 'state', 'county'])]
+				   'employee_num_county', 'fips', 'state', 'county'])]
 	merged['emp_pct'] = merged['employee_num'] / merged['employee_num_county']
 	return merged
 
 
 def reshape(df):
-	return df.pivot(index='FIPS', columns='Industry_Label',
+	return df.pivot(index='fips', columns='Industry_Label',
 			values='emp_pct').reset_index()
 
 
@@ -211,7 +208,7 @@ def execute_NAICS():
 
 	df = pull_data(NAICS_ENDPOINT)
 	df = clean_NAICS(df)
-	df = merge_on_totals(df)
+	df = merge_on_totals(df, 2)
 	df = reshape(df)
 	write(df, 'NAICS.csv')
 

@@ -3,10 +3,10 @@ import requests as re
 from os.path import join, abspath, dirname, exists
 import utils
 
-ROOT = join(dirname(dirname(abspath(__file__))), 'data')
-RAW = join(ROOT, 'raw')
-CL = join(ROOT, 'clean_target')
-FEAT = join(ROOT, 'clean_features')
+ROOT = join(dirname(dirname(abspath(__file__))))
+RAW = join(ROOT, 'data_raw')
+INT = join(ROOT, 'data_intermediate')
+# FEAT = join(ROOT, 'clean_features')
 
 
 
@@ -33,5 +33,5 @@ def main():
 	cases = cl(cases, 'cases')
 	deaths = cl(deaths, 'deaths')
 
-	cases.to_csv(join(FEAT, 'CDC_cases.csv'), index=False)
-	deaths.to_csv(join(FEAT, 'CDC_deaths.csv'), index=False)
+	cases.to_csv(join(INT, 'CDC_cases.csv'), index=False)
+	deaths.to_csv(join(INT, 'CDC_deaths.csv'), index=False)
