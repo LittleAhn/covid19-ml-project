@@ -11,7 +11,7 @@ def noaa():
 	noaa = noaa[['date', 'PRCP', 'TMAX', 'TMIN', 'lat', 'lon']]
 	noaa.lat = pd.to_numeric(noaa.lat)
 	noaa.lon = pd.to_numeric(noaa.lon)
-	noaa = gpd.GeoDataFrame(noaa, crs={'init': 'epsg:4326'}, geometry=gpd.points_from_xy(x=noaa.lon, y=noaa.lat))
+	noaa = gpd.GeoDataFrame(noaa, crs={'init': 'epsg:4269'}, geometry=gpd.points_from_xy(x=noaa.lon, y=noaa.lat))
 	return noaa
 
 
@@ -23,8 +23,8 @@ def shape():
 
 
 def weather():
-	weather = gpd.sjoin(noaa(), shape(), how='inner', op='intersects')
-	weather = weather.fillna(weather.mean(), inplace=True)
+	noaa = noaa.fillna(noaa.mean())
+	weather = gpd.sjoin(noaa, shape(), how='inner', op='intersects')
 	return weather
 
 
