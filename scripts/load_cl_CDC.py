@@ -1,5 +1,6 @@
 import pandas as pd
 import requests as re
+import numpy as np
 from os.path import join, abspath, dirname, exists
 import utils
 
@@ -32,6 +33,10 @@ def main():
 	cases, deaths = read_CDC()
 	cases = cl(cases, 'cases')
 	deaths = cl(deaths, 'deaths')
+
+	### create features
+	cases['log_cases'] = np.log(cases['cases'])
+	deaths['log_deaths'] = np.log(deaths['deaths'])
 
 	cases.to_csv(join(INT, 'CDC_cases.csv'), index=False)
 	deaths.to_csv(join(INT, 'CDC_deaths.csv'), index=False)

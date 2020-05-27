@@ -13,6 +13,7 @@ NAICS_ENDPOINT = r"https://api.census.gov/data/2017/cbp?get=NAICS2017,NAICS2017_
 ACS_ENDPOINT = r"https://api.census.gov/data/2018/acs/acs5/subject?get=NAME,VARS&for=county:*"
 ROOT = join(dirname(dirname(abspath(__file__))))
 OUTPATH = join(ROOT, 'data_intermediate')
+RAW = join(ROOT, 'data_raw')
 
 
 
@@ -97,26 +98,18 @@ def acs_feature_creating(df):
 	df['log_pop'] = np.log(df['S0101_C01_001E'])
 	df['log_households'] = np.log(df['S1101_C01_001E'])
 
-
-	# df['non_movers_pct'] = df['S0702_C01_002E'] / df['S0101_C01_001E']
-	# df['movers_pct'] = (df['S0702_C01_003E'] + df['S0702_C01_004E']) / df['S0101_C01_001E']
-	# df.drop(['S0702_C01_001E', 'S0702_C01_002E', 'S0702_C01_003E', 'S0702_C01_004E'], 
-	# 	axis=1, inplace=True)
-
 	### commuting to work vars
-	commuter_cols = ['S0801_C01_002E', 'S0801_C01_009E', 'S0801_C01_010E', 'S0801_C01_011E', 'S0801_C01_012E', 'S0801_C01_013E']
+	df['workers_pct'] = df['S0801_C01_001E'] / df['S0101_C01_001E']
+	commuter_cols = ['S0801_C01_002E', 'S0801_C01_009E', 'S0801_C01_010E',
+					 'S0801_C01_011E', 'S0801_C01_012E', 'S0801_C01_013E']
 	for c in commuter_cols:
 		df[c] = df[c] / df['S0801_C01_001E'] ## dividng by number of commuters
-	# df[commuter_cols] = df[commuter_cols] / df['S0801_C01_001E'] ## dividng by number of commuters
 
 	### dividing housing type by total households
-	# df['S1101_C01_001E']
 	df['households_u18_pct'] = df['S1101_C01_010E'] / df['S1101_C01_001E']
 	df['households_o60_pct'] = df['S1101_C01_011E'] / df['S1101_C01_001E']
 	df['household_owner_occupied_pct'] = df['S1101_C01_019E'] / df['S1101_C01_001E']
 	df['household_rented_pct'] = df['S1101_C01_020E'] / df['S1101_C01_001E']
-	# df.drop(['S1101_C01_010E', 'S1101_C01_011E', 'S1101_C01_019E', 'S1101_C01_020E'], 
-	# 	axis=1, inplace=True)
 
 	### diving income brackets by total households
 	income_cols = (['S1901_C01_002E', 'S1901_C01_003E', 'S1901_C01_004E', 'S1901_C01_005E', 
@@ -124,23 +117,54 @@ def acs_feature_creating(df):
 	'S1901_C01_009E', 'S1901_C01_010E', 'S1901_C01_011E'])
 	for c in income_cols:
 		df[c] = df[c] / df['S1101_C01_001E']
-	# df['bracket1_pct'] = df['S1901_C01_002E'] / df['S1101_C01_001E']
-	# df['bracket2_pct'] = df['S1901_C01_003E'] / df['S1101_C01_001E']
-	# df['bracket3_pct'] = df['S1901_C01_004E'] / df['S1101_C01_001E']
-	# df['bracket4_pct'] = df['S1901_C01_005E'] / df['S1101_C01_001E']
-	# df['bracket5_pct'] = df['S1901_C01_006E'] / df['S1101_C01_001E']
-	# df['bracket6_pct'] = df['S1901_C01_007E'] / df['S1101_C01_001E']
-	# df['bracket7_pct'] = df['S1901_C01_008E'] / df['S1101_C01_001E']
-	# df['bracket8_pct'] = df['S1901_C01_009E'] / df['S1101_C01_001E']
-	# df['bracket9_pct'] = df['S1901_C01_010E'] / df['S1101_C01_001E']
-	# df['bracket10_pct'] = df['S1901_C01_011E'] / df['S1101_C01_001E']
-	# df.drop(['S1901_C01_002E', 'S1901_C01_003E', 'S1901_C01_004E',
-	# 	'S1901_C01_005E', 'S1901_C01_006E', 'S1901_C01_007E', 'S1901_C01_008E', 
-	# 	'S1901_C01_009E', 'S1901_C01_010E', 'S1901_C01_011E'], axis=1, inplace=True)
+
+	### grandparents
+	# df['grandparents_with_children_pct'] = df['S1002_C01_001E'] / df['S1101_C01_001E']
 
 	### food stamps
 	df['food_stamps_pct'] = df['S2201_C03_001E'] / df['S1101_C01_001E']
 	# df.drop('S2201_C03_001E', axis=1, inplace=True)
+
+	df.drop(['S0801_C01_001E', 'S1101_C01_010E',
+		'S1101_C01_011E', 'S1101_C01_019E', 
+		'S1101_C01_020E', 'S2201_C03_001E'],
+		axis=1, inplace=True, errors='raise')
+
+	return df
+
+
+def rename_acs_cols(df):
+
+	### grab acs columns
+	with open(join(RAW, 'rename_ACS_vars.txt'), 'r') as f:
+		d = f.readlines()
+
+	renames = {}
+	for r in d:
+		items = r.split(':')
+		k = items[0].strip()
+		v = items[1].strip()
+		print(type(k), type(v))
+		renames[k] = v
+
+	df.rename(renames, axis=1, inplace=True, errors='raise')
+	return df
+
+
+def interpolate_with_state(df):
+	"""
+	interpolates missing values with state means
+	"""
+	df = df.copy(deep=True)
+	for c in df.columns:
+
+		### first fill in with state
+		if df[c].isnull().sum() > 0:
+			df['interpolate_val'] = df.groupby('state')[c].transform(np.mean)
+			df[c].fillna(df['interpolate_val'], inplace=True)
+
+		### fill in remainder with 0
+		df[c].fillna(0, inplace=True)
 
 	return df
 
@@ -161,7 +185,8 @@ def execute_ACS():
 			final_df = final_df.merge(df, how='outer', on=['state', 'county', 'NAME'])
 
 	final_df = acs_feature_creating(final_df)
-
+	final_df = rename_acs_cols(final_df)
+	final_df = interpolate_with_state(final_df)
 	write(final_df, 'ACS.csv')
 
 	return final_df
@@ -202,15 +227,17 @@ def reshape(df):
 			values='emp_pct').reset_index()
 
 
-
-
 def execute_NAICS():
 
 	df = pull_data(NAICS_ENDPOINT)
 	df = clean_NAICS(df)
 	df = merge_on_totals(df, 2)
 	df = reshape(df)
+	df['state'] = df['fips'].str[:2]
+	df = interpolate_with_state(df)
 	write(df, 'NAICS.csv')
+
+	return df
 
 
 
