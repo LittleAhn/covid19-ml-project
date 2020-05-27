@@ -1,5 +1,5 @@
 import pandas as pd
-
+import geopandas as gpd
 
 
 def main():
@@ -54,3 +54,13 @@ def read_stations():
 			'name': names}
 	return pd.DataFrame(data)
 
+
+def read_shape():
+
+	geodf = gpd.read_file('../data_raw/tl_2017_us_county.shp')
+	return geodf
+
+
+def read_mobility():
+	df = pd.read_csv('../data_intermediate/us_mobility.csv')
+	df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
