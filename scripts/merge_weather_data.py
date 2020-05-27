@@ -17,15 +17,23 @@ def noaa():
 
 def shape():
 	shape = gpd.read_file('../data_raw/tl_2017_us_county/tl_2017_us_county.shp')
-	shape = shape[['NAMELSAD', 'geometry']]
+	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
 	shape.NAMELSAD = shape.NAMELSAD.str.upper()
 	return shape
 
 
 def weather():
-	noaa = noaa.fillna(noaa.mean())
+	noaa = noaa().fillna(noaa().mean())
 	weather = gpd.sjoin(noaa, shape(), how='inner', op='intersects')
+	weather.columns = ['Date', 'Precipitation', 'Tempreture_max', 'Tempreture_min',
+	'Latitude', 'Longitude', 'Geometry', 'Index_right', 'FIPS', 'CountyName']
 	return weather
+
+
+def agg_weather():
+	agg_weather = weather().groupby(['FIPS', 'Date']).mean()
+	return agg_weather
+
 
 
 
