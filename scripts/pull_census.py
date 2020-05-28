@@ -166,6 +166,7 @@ def interpolate_with_state(df):
 		### fill in remainder with 0
 		df[c].fillna(0, inplace=True)
 
+	df.drop('interpolate_val', axis=1, inplace=True, errors='raise')
 	return df
 
 
@@ -217,7 +218,7 @@ def merge_on_totals(df, level):
                'EMP_y': 'employee_num_county'}, axis=1, inplace=True)
 	merged = merged[merged['Industry'] != '00']
 	merged = merged[(['Industry', 'Industry_Label', 'employee_num', 
-				   'employee_num_county', 'fips', 'state', 'county'])]
+				   'employee_num_county', 'fips'])]
 	merged['emp_pct'] = merged['employee_num'] / merged['employee_num_county']
 	return merged
 

@@ -45,6 +45,13 @@ def read_NAICS():
 	return df
 
 
+def read_noaa():
+
+	noaa = pd.read_csv(join(INT, 'noaa.csv'))
+	df['fips'] = df['countyFIPS'].apply(
+		lambda x: utils.prepend_0s(str(x), 5))	
+
+
 def read_CDC():
 
 	cases = pd.read_csv(join(INT, "CDC_cases.csv"))

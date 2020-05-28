@@ -1,13 +1,76 @@
 import pandas as pd
+import numpy as np
 import geopandas as gpd
 
 
 def main():
 
 	print('reading...')
-	df = read()
+	df = read_temps()
 	print('fixing date...')
 	df['date'] = pd.to_datetime(df['date'], format='%Y%m%d')
+	print("filtering and reformatting...")
+	df = filter_and_reshape(df)
+
+	print('reading stations...')
+	station_data = read_stations()
+	df = df.merge(station_data, how='left', on='id')
+
+	print('coverting to gdf...')
+	df = gpd.GeoDataFrame(df, crs={'init': 'epsg:4269'},
+		geometry=gpd.points_from_xy(x=df['lon'], y=df['lat']))
+
+	print('merging on counties...')
+	df = merge_counties(df)
+
+	print('aggregating by column...')
+	df = df.groupby(['fips', 'date'])['TMAX', 'TMIN', 'PRCP'].mean().reset_index()
+	df['state'] = df['fips'].str[:2]
+
+	print('interpolate...')
+	for c in ['TMAX', 'TMIN', 'PRCP']:
+		df['interpolate_value'] = df.groupby('state')[c].transform(np.mean)
+		df[c].fillna(df['interpolate_value'], inplace=True)
+
+	# return df
+
+	df.drop('interpolate_value', axis=1, inplace=True, errors='raise')
+
+	df.to_csv('../data_intermediate/noaa.csv', index=False)
+
+
+
+	# df.to_csv('../data_intermediate/weather.csv', index=False)
+	return df
+
+
+def create_features(df):
+
+	df['precip_dummy'] = 0
+	df.loc[df['precipitation'] > .05, 'precip_dummy'] = 1
+
+	### rolling avg
+	df.set_index('date', inplace=True)
+	df.sort_index(inplace=True)
+	for var in ['TMIN', 'TMAX']:
+		for window in [3, 5, 7, 10]:
+			df['{}_{}d_avg'.format(var, window)] = df.groupby('fips')[var].transform(
+				lambda x: x.rolling(window, 1).mean())
+
+	return df
+
+
+def merge_counties(df):
+
+	counties = read_shape()
+	counties = counties[['GEOID', 'geometry']]
+	counties.rename({'GEOID': 'fips'}, axis=1, inplace=True, errors='raise')
+	df = gpd.sjoin(df, counties, how='inner', op='intersects')
+	return df.reset_index()
+
+
+def filter_and_reshape(df):
+
 	df = df[['id', 'date', 'var', 'value']]
 	df = df[df['date'] >= '2020-02-15']
 	df = df[df['var'].isin(['TMAX', 'TMIN', 'PRCP'])]
@@ -16,13 +79,10 @@ def main():
 	df = df.reset_index()
 	df.columns = ['id', 'date', 'PRCP', 'TMAX', 'TMIN']
 
-	station_data = read_stations()
-	df = df.merge(station_data, how='left', on='id')
-	df.to_csv('../data_intermediate/weather.csv', index=False)
 	return df
 
 
-def read():
+def read_temps():
 
 	df = pd.read_csv('../data_raw/2020.csv', header=None)
 	df.columns = (['id', 'date', 'var', 'value',
@@ -42,8 +102,8 @@ def read_stations():
 	names = []
 	for line in lines:
 		ids.append(line[:11])
-		lats.append(line[12:20])
-		lons.append(line[21:30])
+		lats.append(float(line[12:20]))
+		lons.append(float(line[21:30]))
 		states.append(line[38:40])
 		names.append(line[41:71])
 
@@ -61,6 +121,4 @@ def read_shape():
 	return geodf
 
 
-def read_mobility():
-	df = pd.read_csv('../data_intermediate/us_mobility.csv')
-	df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
+

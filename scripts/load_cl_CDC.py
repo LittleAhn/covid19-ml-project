@@ -40,3 +40,5 @@ def main():
 
 	cases.to_csv(join(INT, 'CDC_cases.csv'), index=False)
 	deaths.to_csv(join(INT, 'CDC_deaths.csv'), index=False)
+
+	return cases, deaths

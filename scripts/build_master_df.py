@@ -4,11 +4,13 @@ import import_health
 
 
 def build_df():
+	"""
+	assembles all components into 1 large dataframe
+	"""
 
 	### target var as spine
 	print('reading google mobility...')
 	df = read_file.read_target()
-
 
 	### business patterns
 	print('reading NAICS...')
@@ -30,13 +32,13 @@ def build_df():
 	df = df.merge(health_st, how='left', on='StateFIPS')
 	print('interpolating wonderdata counties with state...')
 	for c in df.columns:
-		if c.startswith('Percent') and c[-5:] != 'state':
+		if c.startswith('Percent') and not c.endswith('state'):
 			df.loc[df[c].isnull(), c] = df.loc[df[c].isnull(), c + '_state']
 
 	### drops extra cols
 	print('dropping columns...')
-	cols = [c for c in df.columns if c[-5:] == 'state' or c[:4] in ('CBSA', 'FIPS')]
-	df.drop(columns=cols + ['NAME', 'state', 'county'], axis=1, inplace=True)
+	cols = [c for c in df.columns if c.endswith('_state') or c[:4] in ('CBSA', 'FIPS')]
+	df.drop(columns=cols + ['NAME', 'county'], axis=1, inplace=True)
 
 	### cdc cases, deaths
 	print('reading cdc cases and deaths...')
@@ -51,41 +53,29 @@ def build_df():
 	print('merging kaggle weather+ data...')
 	df = df.merge(weather, how='left', on=['fips', 'date'])
 
+	### noaa
+	print('reading noaa weather...')
+	noaa = read_file.read_noaa()
+	print('merging noaa data...')
+	df = df.merge(noaa, how='left', on=['fips', 'date'], indicator=True)
+
 	### interventions
 	print('reading interventions...')
 	interventions = read_file.read_interventions()
 	print('merging interventions...')
 	df = df.merge(interventions, on='fips', how='left')
-	# target['in_NAICS'] = target['fips'].isin(NAICS['fips'])
-	# NAICS['in_target'] = NAICS['fips'].isin(target['fips'])
 	df.drop(['STATE', 'AREA_NAME', 'county', 'state'], axis=1, inplace=True, errors='raise')
 
-
-	# df.rename({'_merge': 'fips_match'})
-
-
-
-
-			# print(df[df[c].isnull()])
-			# df.loc[df[c].isnull(), c] = \
-			# 	df.loc[df[c].isnull(), 'StateFIPS'].apply(
-			# 	lambda x: import_health.interpolate_nulls(x, c, health_st))
-
-
-
-
-	# df = df.merge(health_st, how='left', on='StateName')
-
-	### interpolating county health with state health
-	# cols = [c for c in df.colums if c.startswith('Percent')]
-	# df[df['fips_match'] == 'left_only', cols] = df[df['fips_match'] == 'left_only', cols]
-	# df.merge
-
-
+	### making additional features
+	df = make_features(df)
 
 	return df
 
 
+def make_features(df):
 
+	df['density'] = df['pop'] / df['area_sqmi']
+
+	return df
 
 
