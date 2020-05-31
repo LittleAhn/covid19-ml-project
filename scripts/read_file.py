@@ -46,11 +46,14 @@ def read_NAICS():
 
 
 def read_noaa():
-
-	noaa = pd.read_csv(join(INT, 'noaa.csv'))
+	"""
+	load NOAA data
+	"""
+	df = pd.read_csv(join(INT, 'noaa.csv'))
 	df['fips'] = df['countyFIPS'].apply(
 		lambda x: utils.prepend_0s(str(x), 5))	
 
+	return df
 
 def read_CDC():
 

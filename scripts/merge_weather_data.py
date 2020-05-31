@@ -23,8 +23,8 @@ def shape():
 
 
 def weather():
-	noaa = noaa().fillna(noaa().mean())
-	weather = gpd.sjoin(noaa, shape(), how='inner', op='intersects')
+	df = noaa().fillna(noaa().mean())
+	weather = gpd.sjoin(df, shape(), how='inner', op='intersects')
 	weather.columns = ['Date', 'Precipitation', 'Tempreture_max', 'Tempreture_min',
 	'Latitude', 'Longitude', 'Geometry', 'Index_right', 'FIPS', 'CountyName']
 	return weather
