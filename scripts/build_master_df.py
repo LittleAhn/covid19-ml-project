@@ -7,45 +7,43 @@ import datetime
 
 def build_df():
 	"""
+<<<<<<< HEAD
 	assembles all components into 1 large data frame
+=======
+	Assembles all components into 1 large dataframe
+>>>>>>> 9e61762de9eb096f9510670f6b9272e573a088ad
 	"""
 
-	### target var as spine
-	print('reading google mobility...')
+	### Target variable
+	print('Reading Google mobility data...')
 	df = read_file.read_target()
 
-	### business patterns
-	print('reading NAICS...')
+	### NAICS data
+	print('Reading / merging NAICS business pattern data...')
 	NAICS = read_file.read_NAICS()
-	print('merging NAICS...')
 	df = df.merge(NAICS, how='left', on='fips')
 	
-	### census
-	print('reading ACS...')
+	### Census data
+	print('Reading / merging ACS census data...')
 	ACS = read_file.read_ACS()
-	print('merging ACS...')
 	df = df.merge(ACS, how='left', on='fips')
 
-	### cdc wonderdata
-	print('reading cdc wonderdata...')
-	health_fips, health_st = read_file.read_health()
-	print('merging wonderdata...')
+	### CDC general health data
+	print('Reading / merging CDC health data...')
+	health_fips,health_st = read_file.read_health()
 	df = df.merge(health_fips, how='left', on='fips')
 	df = df.merge(health_st, how='left', on='StateFIPS')
-	print('interpolating wonderdata counties with state...')
+	print('\tInterpolating missing CDC county data with state data...')
 	for c in df.columns:
 		if c.startswith('Percent') and not c.endswith('state'):
 			df.loc[df[c].isnull(), c] = df.loc[df[c].isnull(), c + '_state']
-
-	### drops extra cols
-	print('dropping columns...')
+	print('\tDropping extra CDC columns...')
 	cols = [c for c in df.columns if c.endswith('_state') or c[:4] in ('CBSA', 'FIPS')]
 	df.drop(columns=cols + ['NAME', 'county'], axis=1, inplace=True)
 
-	### cdc cases, deaths
-	print('reading cdc cases and deaths...')
-	cases, deaths = read_file.read_CDC()
-	print('merging cdc cases and deaths...')
+	### CDC case / death data
+	print('Reading/merging CDC cases and death data...')
+	cases,deaths = read_file.read_CDC()
 	df = df.merge(cases, how='left', on=['date', 'fips'])
 	df = df.merge(deaths, how='left', on=['date', 'fips'])
 
@@ -62,6 +60,7 @@ def build_df():
 	noaa = read_file.read_noaa()
 	print('merging noaa data...')
 	df = df.merge(noaa, how='left', on=['fips', 'date'])
+
 
 	### interventions
 	print('reading interventions...')
