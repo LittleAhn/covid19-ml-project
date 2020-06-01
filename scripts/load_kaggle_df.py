@@ -54,7 +54,7 @@ def create_features(df):
 	# new_df['mean_tmp_3d_avg'] = df.groupby('fips')['mean_temp'].transform(
 	# 	lambda x: x.rolling(3, 1).mean())
 
-	new_df[['stay_at_home_announced', 'stay_at_home_effective']].replace({'no': 0, 'yes': 1}, inplace=True)
+	new_df[['stay_at_home_announced', 'stay_at_home_effective']] = new_df[['stay_at_home_announced', 'stay_at_home_effective']].replace({'no': 0, 'yes': 1})
 
 	return new_df
 

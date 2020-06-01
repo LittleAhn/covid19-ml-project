@@ -47,9 +47,12 @@ def read_NAICS():
 
 def read_noaa():
 
-	noaa = pd.read_csv(join(INT, 'noaa.csv'))
-	df['fips'] = df['countyFIPS'].apply(
+	df = pd.read_csv(join(INT, 'noaa.csv'))
+	df['fips'] = df['fips'].apply(
 		lambda x: utils.prepend_0s(str(x), 5))	
+	df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
+
+	return df
 
 
 def read_CDC():
@@ -109,8 +112,10 @@ def read_kaggle():
 
 def read_interventions():
 
-	file = 'https://raw.githubusercontent.com/JieYingWu/COVID-19_US_County-level_Summaries/master/data/interventions.csv'
-	df = pd.read_csv(file)
+	# file = 'https://raw.githubusercontent.com/JieYingWu/COVID-19_US_County-level_Summaries/master/data/interventions.csv'
+	# df = pd.read_csv(file)
+
+	df = pd.read_csv(join(INT, 'interventions.csv'))
 
 	df.rename({'FIPS': 'fips'}, axis=1, inplace=True)
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))

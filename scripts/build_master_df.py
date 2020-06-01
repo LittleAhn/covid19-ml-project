@@ -1,11 +1,13 @@
+
+import numpy as np
 import pandas as pd
 import read_file
 import import_health
-
+import datetime
 
 def build_df():
 	"""
-	assembles all components into 1 large dataframe
+	assembles all components into 1 large data frame
 	"""
 
 	### target var as spine
@@ -47,34 +49,55 @@ def build_df():
 	df = df.merge(cases, how='left', on=['date', 'fips'])
 	df = df.merge(deaths, how='left', on=['date', 'fips'])
 
-	### weather + kaggle
-	print('reading kaggle weather+ data...')
+	### kaggle extra vars
+	print('reading kaggle data...')
 	weather = read_file.read_kaggle()
-	print('merging kaggle weather+ data...')
+	print('merging kaggle data...')
 	df = df.merge(weather, how='left', on=['fips', 'date'])
+	print('interpolating null with fips mean for density')
+	df['area_sqmi'] = df.groupby('fips')['area_sqmi'].transform(np.mean)
 
 	### noaa
 	print('reading noaa weather...')
 	noaa = read_file.read_noaa()
 	print('merging noaa data...')
-	df = df.merge(noaa, how='left', on=['fips', 'date'], indicator=True)
+	df = df.merge(noaa, how='left', on=['fips', 'date'])
 
 	### interventions
 	print('reading interventions...')
 	interventions = read_file.read_interventions()
 	print('merging interventions...')
 	df = df.merge(interventions, on='fips', how='left')
-	df.drop(['STATE', 'AREA_NAME', 'county', 'state'], axis=1, inplace=True, errors='raise')
+	df.drop(['STATE', 'AREA_NAME', 'state', 'StateFIPS'], axis=1, inplace=True, errors='raise')
+	print('transforming intervention columns...')
+	for c in df.columns:
+		if c.startswith("int_date_"):
+			print('transforming {}...'.format(c))
+			df[c].fillna(800000, inplace=True) ### arbitrary high date
+			df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))
+			df[c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
+			# df['int_' + c] = 0
+			# df.loc[df[c] >= df['date'], 'int_' + c] = 1			
 
-	### making additional features
+	return df
+	## making additional features
 	df = make_features(df)
+
+	df.drop([c for c in df.columns if c.startswith('lag')],
+		axis=1, inplace=True, errors='raise')
+
+	df.drop(['state_x', 'state_y', 'CountyFIPS'], axis=1, inplace=True, errors='raise')
 
 	return df
 
 
 def make_features(df):
 
-	df['density'] = df['pop'] / df['area_sqmi']
+	df['pop_density'] = df['pop'] / df['area']
+	df['cases_per_pop'] = df['cases'] / df['pop']
+	df['cases_per_area'] = df['cases'] / df['area']
+	df['deaths_per_pop'] = df['deaths'] / df['pop']
+	df['deaths_per_area'] = df['deaths'] / df['area']
 
 	return df
 

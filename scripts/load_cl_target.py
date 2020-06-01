@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import utils
 from os.path import join, abspath, dirname, exists
 
@@ -12,11 +13,14 @@ def execute():
 	fips = get_fips_crosswalk()
 	mobility = load_mobility()
 	mobility_fips = merge_mobility_fips(mobility, fips)
-	mobility_fips.to_csv(join(INT, 'us_mobility.csv'), index=False)
-	print(mobility_fips.shape)
+	# print(mobility_fips.shape)
 	# print(mobility_fips.index)
-	return mobility_fips
+	moving, varnames = create_moving_avgs(mobility_fips)
+	lagged = create_lag_features(moving, varnames)
+	final = interpolate_rolling(lagged)
 
+	final.to_csv(join(INT, 'us_mobility.csv'), index=False)
+	return final
 
 
 def get_fips_crosswalk():
@@ -82,6 +86,67 @@ def merge_mobility_fips(mobility, fips):
 	mobility_fips = mobility_fips.drop(columns=['_merge'])
 
 	return mobility_fips
+
+
+def create_lag_features(df, varnames):
+
+	df = df.copy(deep=True)
+
+	print('lagging...')
+	df.set_index(['date', 'fips'], inplace=True)
+	df.sort_index(inplace=True)
+
+	print(df.columns)
+	print(varnames)
+	for lag in [1, 3, 5, 7, 10]:
+		print('lag num', lag)
+		lagged = df[varnames].groupby(level='fips').shift(lag)
+		lagged.columns = ['lag{}_{}'.format(lag, c) for c in lagged.columns]
+		df = df.merge(lagged, how='left', left_index=True, right_index=True)
+
+	return df.reset_index()
+
+
+def create_moving_avgs(df):
+
+	df = df.copy(deep=True)
+
+	cols = ([
+		'retail_and_recreation_percent_change_from_baseline',
+		'grocery_and_pharmacy_percent_change_from_baseline',
+		'parks_percent_change_from_baseline',
+		'transit_stations_percent_change_from_baseline',
+		'workplaces_percent_change_from_baseline',
+		'residential_percent_change_from_baseline'
+			])
+
+	varnames = []
+		### rolling avg
+	print('moving avg...')
+	df.set_index('date', inplace=True)
+	df.sort_index(inplace=True)
+	for var in cols:
+		for window in [3, 7]:
+			varname = 'chg_{}_{}d_avg'.format(var[:var.find('_')], window)
+			varnames.append(varname)
+			df[varname] = df.groupby(
+				'fips')[var].transform(lambda x: x.rolling(window, 1).mean())
+
+	return df.reset_index(), varnames
+
+
+def interpolate_rolling(df):
+
+	for c in df.columns:
+		if 'avg' in c and 'chg' in c:
+			print('imputing for', c)
+			vals = df.groupby(['StateFIPS', 'date'])[c].transform(np.mean)
+			df[c].fillna(vals, inplace=True)
+
+	# df.drop('interpolate_val', axis=1, inplace=True, errors='raise')
+
+	return df
+
 
 
 

@@ -228,6 +228,14 @@ def reshape(df):
 			values='emp_pct').reset_index()
 
 
+def rename_naics(df):
+
+	new_names = {c: "NAICS_" + c for c in df.columns if c not in ('fips', 'state')}
+	df.rename(new_names, axis=1, inplace=True, errors='raise')
+	return df
+	
+
+
 def execute_NAICS():
 
 	df = pull_data(NAICS_ENDPOINT)
@@ -236,6 +244,7 @@ def execute_NAICS():
 	df = reshape(df)
 	df['state'] = df['fips'].str[:2]
 	df = interpolate_with_state(df)
+	df = rename_naics(df)
 	write(df, 'NAICS.csv')
 
 	return df

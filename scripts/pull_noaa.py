@@ -18,7 +18,7 @@ def main():
 
 	print('coverting to gdf...')
 	df = gpd.GeoDataFrame(df, crs={'init': 'epsg:4269'},
-		geometry=gpd.points_from_xy(x=df['lon'], y=df['lat']))
+		geometry=gpd.points_from_xy(x=df['lon'], y=df['lat']))	
 
 	print('merging on counties...')
 	df = merge_counties(df)
@@ -27,16 +27,28 @@ def main():
 	df = df.groupby(['fips', 'date'])['TMAX', 'TMIN', 'PRCP'].mean().reset_index()
 	df['state'] = df['fips'].str[:2]
 
+	print("convert temperatures to farenheit")
+	for c in ['TMAX', 'TMIN']:
+		df[c] = df[c].apply(lambda x: (x/10) * (5/9) + 32)
+
+	print('merging on areas..')
+	counties = read_shape()
+	df = df.merge(counties[['fips', 'area']], how='left', on='fips')
+
+
 	print('interpolate...')
 	for c in ['TMAX', 'TMIN', 'PRCP']:
-		df['interpolate_value'] = df.groupby('state')[c].transform(np.mean)
-		df[c].fillna(df['interpolate_value'], inplace=True)
+		vals = df.groupby('state')[c].transform(np.mean)
+		df[c].fillna(vals, inplace=True)
+
+	print('creating features...')
+	df = create_features(df)
 
 	# return df
 
-	df.drop('interpolate_value', axis=1, inplace=True, errors='raise')
+	# df.drop('interpolate_value', axis=1, inplace=True, errors='raise')
 
-	df.to_csv('../data_intermediate/noaa.csv', index=False)
+	df.to_csv('../data_intermediate/noaa.csv')
 
 
 
@@ -47,7 +59,7 @@ def main():
 def create_features(df):
 
 	df['precip_dummy'] = 0
-	df.loc[df['precipitation'] > .05, 'precip_dummy'] = 1
+	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### arbitrary cutoff
 
 	### rolling avg
 	df.set_index('date', inplace=True)
@@ -63,7 +75,7 @@ def create_features(df):
 def merge_counties(df):
 
 	counties = read_shape()
-	counties = counties[['GEOID', 'geometry']]
+	counties = counties[['GEOID', 'geometry', 'area']]
 	counties.rename({'GEOID': 'fips'}, axis=1, inplace=True, errors='raise')
 	df = gpd.sjoin(df, counties, how='inner', op='intersects')
 	return df.reset_index()
@@ -118,6 +130,8 @@ def read_stations():
 def read_shape():
 
 	geodf = gpd.read_file('../data_raw/tl_2017_us_county.shp')
+	geodf['area'] = geodf.geometry.apply(lambda x: x.area)
+	geodf['fips'] = geodf['STATEFP'] + geodf['COUNTYFP']
 	return geodf
 
 

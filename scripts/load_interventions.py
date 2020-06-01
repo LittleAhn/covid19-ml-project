@@ -12,10 +12,27 @@ file = 'https://raw.githubusercontent.com/JieYingWu/COVID-19_US_County-level_Sum
 def read_file():
 
 	df = pd.read_csv(file)
+
+	df.drop(['stay at home', '>50 gatherings', '>500 gatherings', 'entertainment/gym'],
+		axis=1, inplace=True, errors='raise')
 	# date = datetime.date.fromordinal
-	# for c in df.columns:
-	# 	if c not in ['FIPS', 'STATE', 'AREA_NAME']:
-	# 		df[c] = df[c].apply(lambda x: datetime.date.fromordinal(float(x)))
+
+	names = {c: 'int_date_' + c for c in df.columns if c not in ['FIPS', 'STATE', 'AREA_NAME']}
+	df.rename(names, axis=1, inplace=True, errors='raise')
+
+	df.to_csv(join(INT, 'interventions.csv'), index=False)
 
 	return df
+
+
+def transform_dates(df, c):
+
+	df[c].fillna(800000, inplace=True) ### arbitrary high date
+	df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))
+	df['int_' + c] = 0
+	df.loc[df[c] >= df['date'], 'int_' + c] = 1
+
+	return df
+
+
 
