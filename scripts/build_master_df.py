@@ -60,8 +60,17 @@ def build_df():
 	noaa = read_file.read_noaa()
 	print('merging noaa data...')
 	df = df.merge(noaa, how='left', on=['fips', 'date'])
+	print('interpolating missing weather data')
+	for c in df.col:
+		if c.startswith('TM') or c == 'PRCP':
+			vals = df.groupby(['fips', 'date'])[c].transform(np.mean)
+			df[c].fillna(vals, inplace=True)
+	print('creating precipiation dummy...')
+	df['precip_dummy'] = 0
+	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### cutoff is 1000% arbitrary
 
 
+# 
 	### interventions
 	print('reading interventions...')
 	interventions = read_file.read_interventions()
