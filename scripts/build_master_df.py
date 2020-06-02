@@ -33,11 +33,11 @@ def build_df():
 	health_fips,health_st = read_file.read_health()
 	df = df.merge(health_fips, how='left', on='fips')
 	df = df.merge(health_st, how='left', on='StateFIPS')
-	print('\tInterpolating missing CDC county data with state data...')
+	print('    Interpolating missing CDC county data with state data...')
 	for c in df.columns:
 		if c.startswith('Percent') and not c.endswith('state'):
 			df.loc[df[c].isnull(), c] = df.loc[df[c].isnull(), c + '_state']
-	print('\tDropping extra CDC columns...')
+	print('    Dropping extra CDC columns...')
 	cols = [c for c in df.columns if c.endswith('_state') or c[:4] in ('CBSA', 'FIPS')]
 	df.drop(columns=cols + ['NAME', 'county'], axis=1, inplace=True)
 
@@ -48,12 +48,13 @@ def build_df():
 	df = df.merge(deaths, how='left', on=['date', 'fips'])
 
 	### kaggle extra vars
+	### right now we're only using stay_at_home from this df
 	print('reading kaggle data...')
-	weather = read_file.read_kaggle()
+	kaggle = read_file.read_kaggle()
 	print('merging kaggle data...')
-	df = df.merge(weather, how='left', on=['fips', 'date'])
-	print('interpolating null with fips mean for density')
-	df['area_sqmi'] = df.groupby('fips')['area_sqmi'].transform(np.mean)
+	df = df.merge(kaggle, how='left', on=['fips', 'date'])
+	# print('interpolating null with fips mean for density')
+	# df['area_sqmi'] = df.groupby('fips')['area_sqmi'].transform(np.mean)
 
 	### noaa
 	print('reading noaa weather...')
@@ -61,14 +62,15 @@ def build_df():
 	print('merging noaa data...')
 	df = df.merge(noaa, how='left', on=['fips', 'date'])
 	print('interpolating missing weather data')
-	for c in df.col:
+	for c in df.columns:
 		if c.startswith('TM') or c == 'PRCP':
-			vals = df.groupby(['fips', 'date'])[c].transform(np.mean)
+			print("    interpolating {}...".format(c))
+			vals = df.groupby(['StateFIPS', 'date'])[c].transform(np.mean)
 			df[c].fillna(vals, inplace=True)
-	print('creating precipiation dummy...')
+			# print(df[c].isnull().sum())
+	print('    creating precipiation dummy...')
 	df['precip_dummy'] = 0
 	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### cutoff is 1000% arbitrary
-
 
 # 
 	### interventions
@@ -80,7 +82,7 @@ def build_df():
 	print('transforming intervention columns...')
 	for c in df.columns:
 		if c.startswith("int_date_"):
-			print('transforming {}...'.format(c))
+			print('    transforming {}...'.format(c))
 			df[c].fillna(800000, inplace=True) ### arbitrary high date
 			df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))
 			df[c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
