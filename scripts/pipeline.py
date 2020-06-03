@@ -1,12 +1,14 @@
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score,f1_score,precision_score,recall_score,mean_squared_error,mean_absolute_error
+from joblib import dump
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
 import datetime
 import os
+import pickle
 
 def read_data(df, csvsep=","):
     '''
@@ -364,7 +366,8 @@ def build_classifiers(models, params_grid,
 
 def build_regressors(models, params_grid, 
                       train_features, train_outcome, 
-                      test_features, test_outcome):
+                      test_features, test_outcome,
+                      save_path):
     '''
     Trains a number of models and returns a DataFrame 
     of these models and their resulting evaluation metrics.
@@ -385,7 +388,7 @@ def build_regressors(models, params_grid,
     for model_key in models.keys(): 
         
         # Loop over parameters 
-        for params in params_grid[model_key]: 
+        for idx,params in enumerate(params_grid[model_key]): 
             
             # Create model 
             model = models[model_key]
@@ -398,13 +401,17 @@ def build_regressors(models, params_grid,
             # Fit model on training set 
             model.fit(train_features, train_outcome)
 
-            # Finish timing for fit
-            endmodel = datetime.datetime.now()
-            print("\tTime elapsed to train: ",endmodel-startmodel,"\n")
-            
             # Predict on testing set 
             test_pred = model.predict(test_features)
-            
+
+            # Save results
+            dump(model, save_path+f"/{model_key} - Model {idx}.joblib")
+            dump(test_pred, save_path+f"/{model_key} - Predictions {idx}.joblib")
+
+            # Finish timing
+            endmodel = datetime.datetime.now()
+            print("\tTime elapsed to train and predict: ",endmodel-startmodel,"\n")
+
             # Evaluate predictions 
             MSE = mean_squared_error(test_outcome,test_pred)
             MAE = mean_absolute_error(test_outcome,test_pred)

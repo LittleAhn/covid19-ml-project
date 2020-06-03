@@ -50,7 +50,7 @@ def build_df():
 	df = df.merge(kaggle, how='left', on=['fips', 'date'])
 
 	### NOAA
-	print('Reading /merging NOAA weather data...')
+	print('Reading / merging NOAA weather data...')
 	noaa = read_file.read_noaa()
 	df = df.merge(noaa, how='left', on=['fips', 'date'])
 	print('\tInterpolating missing weather data')
@@ -64,7 +64,7 @@ def build_df():
 	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 
 
 	### Interventions
-	print('reading interventions...')
+	print('Reading interventions data...')
 	interventions = read_file.read_interventions()
 	df = df.merge(interventions, on='fips', how='left')
 	df.drop(['STATE', 'AREA_NAME',], axis=1, inplace=True, errors='raise')
