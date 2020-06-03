@@ -13,8 +13,6 @@ def execute():
 	fips = get_fips_crosswalk()
 	mobility = load_mobility()
 	mobility_fips = merge_mobility_fips(mobility, fips)
-	# print(mobility_fips.shape)
-	# print(mobility_fips.index)
 	moving, varnames = create_moving_avgs(mobility_fips)
 	lagged = create_lag_features(moving, varnames)
 	final = interpolate_rolling(lagged)
@@ -92,14 +90,14 @@ def create_lag_features(df, varnames):
 
 	df = df.copy(deep=True)
 
-	print('lagging...')
+	print('Lagging...')
 	df.set_index(['date', 'fips'], inplace=True)
 	df.sort_index(inplace=True)
 
 	print(df.columns)
 	print(varnames)
 	for lag in [1, 3, 5, 7, 10]:
-		print('lag num', lag)
+		print('\tLag num', lag)
 		lagged = df[varnames].groupby(level='fips').shift(lag)
 		lagged.columns = ['lag{}_{}'.format(lag, c) for c in lagged.columns]
 		df = df.merge(lagged, how='left', left_index=True, right_index=True)
@@ -121,8 +119,8 @@ def create_moving_avgs(df):
 			])
 
 	varnames = []
-		### rolling avg
-	print('moving avg...')
+
+	# Rolling average
 	df.set_index('date', inplace=True)
 	df.sort_index(inplace=True)
 	for var in cols:

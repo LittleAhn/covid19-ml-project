@@ -7,11 +7,7 @@ import datetime
 
 def build_df():
 	"""
-<<<<<<< HEAD
-	assembles all components into 1 large data frame
-=======
 	Assembles all components into 1 large dataframe
->>>>>>> 9e61762de9eb096f9510670f6b9272e573a088ad
 	"""
 
 	### Target variable
@@ -42,73 +38,61 @@ def build_df():
 	df.drop(columns=cols + ['NAME', 'county'], axis=1, inplace=True)
 
 	### CDC case / death data
-	print('Reading/merging CDC cases and death data...')
+	print('Reading / merging CDC cases and death data...')
 	cases,deaths = read_file.read_CDC()
 	df = df.merge(cases, how='left', on=['date', 'fips'])
 	df = df.merge(deaths, how='left', on=['date', 'fips'])
 
-	### kaggle extra vars
-	### right now we're only using stay_at_home from this df
-	print('reading kaggle data...')
+	### Kaggle extra vars
+	### Right now we're only using stay_at_home from this df
+	print('Reading / merging Kaggle data...')
 	kaggle = read_file.read_kaggle()
-	print('merging kaggle data...')
 	df = df.merge(kaggle, how='left', on=['fips', 'date'])
-	# print('interpolating null with fips mean for density')
-	# df['area_sqmi'] = df.groupby('fips')['area_sqmi'].transform(np.mean)
 
-	### noaa
-	print('reading noaa weather...')
+	### NOAA
+	print('Reading /merging NOAA weather data...')
 	noaa = read_file.read_noaa()
-	print('merging noaa data...')
 	df = df.merge(noaa, how='left', on=['fips', 'date'])
-	print('interpolating missing weather data')
+	print('\tInterpolating missing weather data')
 	for c in df.columns:
 		if c.startswith('TM') or c == 'PRCP':
-			print("    interpolating {}...".format(c))
+			print("\tInterpolating {}...".format(c))
 			vals = df.groupby(['StateFIPS', 'date'])[c].transform(np.mean)
 			df[c].fillna(vals, inplace=True)
-			# print(df[c].isnull().sum())
-	print('    creating precipiation dummy...')
+	print('\tCreating precipiation dummy...')
 	df['precip_dummy'] = 0
-	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### cutoff is 1000% arbitrary
+	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 
 
-# 
-	### interventions
+	### Interventions
 	print('reading interventions...')
 	interventions = read_file.read_interventions()
-	print('merging interventions...')
 	df = df.merge(interventions, on='fips', how='left')
-	df.drop(['STATE', 'AREA_NAME', 'state', 'StateFIPS'], axis=1, inplace=True, errors='raise')
-	print('transforming intervention columns...')
+	df.drop(['STATE', 'AREA_NAME',], axis=1, inplace=True, errors='raise')
+	print('\tTransforming intervention columns...')
 	for c in df.columns:
 		if c.startswith("int_date_"):
-			print('    transforming {}...'.format(c))
+			print('\tTransforming {}...'.format(c))
 			df[c].fillna(800000, inplace=True) ### arbitrary high date
-			df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))
-			df[c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
+			df.loc[:,c] = df.loc[:,c].apply(lambda x: datetime.date.fromordinal(int(x)))
+			df.loc[:,c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
 			# df['int_' + c] = 0
 			# df.loc[df[c] >= df['date'], 'int_' + c] = 1			
 
-	return df
-	## making additional features
+	## Making additional features
 	df = make_features(df)
 
+	# Drop excess columns
 	df.drop([c for c in df.columns if c.startswith('lag')],
 		axis=1, inplace=True, errors='raise')
-
-	df.drop(['state_x', 'state_y', 'CountyFIPS'], axis=1, inplace=True, errors='raise')
+	df.drop(['CountyFIPS', 'StateFIPS', 'state'], axis=1, inplace=True, errors='raise')
 
 	return df
 
 
 def make_features(df):
-
 	df['pop_density'] = df['pop'] / df['area']
 	df['cases_per_pop'] = df['cases'] / df['pop']
 	df['cases_per_area'] = df['cases'] / df['area']
 	df['deaths_per_pop'] = df['deaths'] / df['pop']
 	df['deaths_per_area'] = df['deaths'] / df['area']
-
 	return df
-
-
