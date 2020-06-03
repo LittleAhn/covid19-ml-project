@@ -165,5 +165,11 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+.ipynb_checkpoints/
+
 # TOO BIG DATA FILES
 data_raw/BRFSS Health - State.csv
+data_raw/tl_2017_us_county.shp
+data_raw/2020.csv
+data_raw/2020.csv.gz
+data_intermediate/noaa.csv
