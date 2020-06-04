@@ -32,7 +32,7 @@ def build_and_split_master_df(save_path):
 
     # Split train test 
     train_full,validation_full,test_full = pipeline.get_train_test(df,train_size=0.8,
-                                                                time_series=True,validation=True)
+                                                                   time_series=True,validation=True)
     train_target = train_full[main_target]
     validation_target = validation_full[main_target]
     test_target = test_full[main_target]
@@ -128,15 +128,14 @@ def fit_and_eval_models(train_pca_features,train_target,
 
 if __name__ == "__main__":
 
-    save_path = "../output"
-    train_features,validation_features,test_features,train_target,validation_target,test_target = build_and_split_master_df(save_path)
+    train_features,validation_features,test_features,train_target,validation_target,test_target = build_and_split_master_df("../output/data")
     train_pca_features,validation_pca_features,test_pca_features = get_pca_reduction(train_features,
                                                                                      validation_features,
                                                                                      test_features,
-                                                                                     save_path)
+                                                                                     "../output/data")
     model_results = fit_and_eval_models(train_pca_features,train_target,
                                         validation_pca_features,validation_target,
-                                        save_path)
+                                        "../output/models_predictions_pca")
     
     # Sort and save results
     model_results = model_results.sort_values('MAE')

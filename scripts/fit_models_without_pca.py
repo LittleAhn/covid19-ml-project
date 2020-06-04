@@ -90,11 +90,10 @@ def fit_and_eval_models(train_features,train_target,
 
 if __name__ == "__main__":
 
-    save_path = "../output"
-    train_features,validation_features,test_features,train_target,validation_target,test_target = build_and_split_master_df(save_path)
+    train_features,validation_features,test_features,train_target,validation_target,test_target = build_and_split_master_df("../output/data")
     model_results = fit_and_eval_models(train_features,train_target,
                                         validation_features,validation_target,
-                                        save_path)
+                                        "../output/models_predictions_nopca")
     
     # Sort and save results
     model_results = model_results.sort_values('MAE')

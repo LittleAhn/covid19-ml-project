@@ -31,9 +31,9 @@ def main():
 	for c in ['TMAX', 'TMIN']:
 		df.loc[:,c] = df[c].apply(lambda x: (x/10) * (9/5) + 32)
 
-	print('merging on areas..')
-	counties = read_shape()
-	df = df.merge(counties[['fips', 'area']], how='left', on='fips')
+	# print('merging on areas..')
+	# counties = read_shape()
+	# df = df.merge(counties[['fips', 'area']], how='left', on='fips')
 
 	print('interpolate...')
 	for c in ['TMAX', 'TMIN', 'PRCP']:
@@ -74,7 +74,7 @@ def create_features(df):
 def merge_counties(df):
 
 	counties = read_shape()
-	counties = counties[['GEOID', 'geometry', 'area']]
+	counties = counties[['GEOID', 'geometry']]
 	counties.rename({'GEOID': 'fips'}, axis=1, inplace=True, errors='raise')
 	df = gpd.sjoin(df, counties, how='inner', op='intersects')
 	return df.reset_index()
@@ -129,7 +129,7 @@ def read_stations():
 def read_shape():
 
 	geodf = gpd.read_file('../data_raw/tl_2017_us_county.shp')
-	geodf['area'] = geodf.geometry.apply(lambda x: x.area)
+	# geodf['area'] = geodf.geometry.apply(lambda x: x.area)
 	geodf['fips'] = geodf['STATEFP'] + geodf['COUNTYFP']
 	return geodf
 
