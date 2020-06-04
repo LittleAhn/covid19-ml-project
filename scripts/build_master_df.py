@@ -81,19 +81,10 @@ def build_df():
 			# df['int_' + c] = 0
 			# df.loc[df[c] >= df['date'], 'int_' + c] = 1			
 
-<<<<<<< HEAD
-	### vote share
-	print('reading vote share...')
-	votes = read_file.read_votes()
-	df = df.merge(votes, how='outer', on='fips', indicator=True)
-	# return df
-
-=======
 	### Vote share
 	print('Reading vote share data...')
 	votes = read_file.read_votes()
 	df = df.merge(votes, how='left', on='fips')
->>>>>>> 1244d8331f2d9dc1edc64cadc949f2ca3942e862
 
 	## Making additional features
 	df = make_features(df)
@@ -101,18 +92,11 @@ def build_df():
 	# Drop excess columns
 	df.drop([c for c in df.columns if c.startswith('lag')],
 		axis=1, inplace=True, errors='raise')
-<<<<<<< HEAD
-	df.drop(['CountyFIPS', 'state'], axis=1, inplace=True, errors='raise')
-
-	print('outputting csv..')
-	df.to_csv('../full_df.csv', index=False)
-=======
 	df.drop(columns=['state_x','state_y','CountyFIPS',
 					 'totalvotes','area'], inplace=True)
 	
 	print('Outputting csv..')
 	df.to_csv('../output/full_df.csv', index=False)
->>>>>>> 1244d8331f2d9dc1edc64cadc949f2ca3942e862
 
 	return df
 

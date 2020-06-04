@@ -111,9 +111,9 @@ def fit_and_eval_models(train_pca_features,train_target,
                     for x in [0.01,0.05,0.1,0.5,1,5]
                     for y in [0.01,0.1,1]],
         'RandomForestRegressor': [{'n_estimators':x, 'max_features':y,
-                                'n_jobs':-1} \
-                                for y in ['auto','log2','sqrt']
-                                for x in [100,500,1000]],
+                                   'n_jobs':-1} \
+                                   for y in ['auto','log2','sqrt']
+                                   for x in [100,500,1000]],
         'AdaBoostRegressor': [{'n_estimators':y} for y in [50,75,100,125,150,175,200]],
         'KNeighborsRegressor': [{'n_neighbors':x} for x in np.arange(5,20)]
     }
