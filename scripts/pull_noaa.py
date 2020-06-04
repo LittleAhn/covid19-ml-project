@@ -37,7 +37,7 @@ def main():
 
 	print('interpolate...')
 	for c in ['TMAX', 'TMIN', 'PRCP']:
-		vals = df.groupby('state')[c].transform(np.mean)
+		vals = df.groupby(['state', 'date'])[c].transform(np.mean)
 		df[c].fillna(vals, inplace=True)
 
 	print('creating features...')
