@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -15,13 +14,12 @@ def build_df():
 	print('Reading Google mobility data...')
 	df = read_file.read_target()
 
-
 	### Shape file for area
 	print('Reading shape file (takes a couple minutes)')
 	geodf = gpd.read_file('../data_raw/tl_2017_us_county.shp')
 	geodf['area'] = geodf.geometry.apply(lambda x: x.area)
 	geodf['fips'] = geodf['STATEFP'] + geodf['COUNTYFP']
-	print('Merging on areas')
+	print('\tMerging on areas')
 	df = df.merge(geodf[['fips', 'area']], how='left', on='fips')
 
 	### NAICS data
@@ -63,15 +61,9 @@ def build_df():
 			print("\tInterpolating {}...".format(c))
 			vals = df.groupby(['StateFIPS', 'date'])[c].transform(np.mean)
 			df[c].fillna(vals, inplace=True)
-	# print('interpolating area (problem arises from merging on dates)...')
-	# areas = df.groupby('fips')['area'].transform(np.mean)
-	# df['area'].fillna(areas, inplace=True)
 	print('\tCreating precipiation dummy...')
 	df['precip_dummy'] = 0
-	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### cutoff is 1000% arbitrary
-	# return df
- 
-
+	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 
 
 	### Interventions
 	print('Reading interventions data...')
@@ -85,11 +77,6 @@ def build_df():
 			df[c].fillna(800000, inplace=True) ### arbitrary high date
 			df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))
 			df[c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
-	## making additional features
-			# df.loc[:,c] = df.loc[:,c].apply(lambda x: datetime.date.fromordinal(int(x)))
-			# df.loc[:,c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
-			# df['int_' + c] = 0
-			# df.loc[df[c] >= df['date'], 'int_' + c] = 1			
 
 	### Vote share
 	print('Reading vote share data...')
@@ -103,10 +90,19 @@ def build_df():
 	df.drop([c for c in df.columns if c.startswith('chg')],
 		axis=1, inplace=True, errors='raise')
 	df.drop(columns=['state_x','state_y','CountyFIPS',
-					 'totalvotes','area'], inplace=True)
-	
+					 'totalvotes','dayofweek'], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag1')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag3')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag5')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('3d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('workplaces_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('residential_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('parks_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('grocery_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('transit_7d_avg')], inplace=True)
+
 	print('Outputting csv..')
-	df.to_csv('../output/full_df.csv', index=False)
+	df.to_csv('../output/data/full_df.csv', index=False)
 
 	return df
 
@@ -118,7 +114,7 @@ def make_features(df):
 	df['deaths_per_pop'] = df['deaths'] / df['pop']
 	df['deaths_per_area'] = df['deaths'] / df['area']
 
-	### weekday
+	### Weekday
 	df['dayofweek'] = df['date'].apply(lambda x: x.dayofweek)
 	week_dummies = pd.get_dummies(df['dayofweek'], prefix='dayofweek')
 	for c in week_dummies.columns:
