@@ -173,6 +173,7 @@ data_raw/tl_2017_us_county.shp
 data_raw/2020.csv
 data_raw/2020.csv.gz
 data_intermediate/noaa.csv
+data_intermediate/us_mobility.csv
 output/data/Data - Train*.joblib
 output/models_predictions_pca/KNeighborsRegressor - Model *.joblib
 output/models_predictions_nopca/KNeighborsRegressor - Model *.joblib
