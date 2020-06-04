@@ -1,6 +1,7 @@
 
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 import read_file
 import import_health
 import datetime
@@ -13,6 +14,15 @@ def build_df():
 	### Target variable
 	print('Reading Google mobility data...')
 	df = read_file.read_target()
+
+
+	### Shape file for area
+	print('Reading shape file (takes a couple minutes)')
+	geodf = gpd.read_file('../data_raw/tl_2017_us_county.shp')
+	geodf['area'] = geodf.geometry.apply(lambda x: x.area)
+	geodf['fips'] = geodf['STATEFP'] + geodf['COUNTYFP']
+	print('Merging on areas')
+	df = df.merge(geodf[['fips', 'area']], how='left', on='fips', indicator=True)
 
 	### NAICS data
 	print('Reading / merging NAICS business pattern data...')
@@ -59,10 +69,16 @@ def build_df():
 			print("\tInterpolating {}...".format(c))
 			vals = df.groupby(['StateFIPS', 'date'])[c].transform(np.mean)
 			df[c].fillna(vals, inplace=True)
+	# print('interpolating area (problem arises from merging on dates)...')
+	# areas = df.groupby('fips')['area'].transform(np.mean)
+	# df['area'].fillna(areas, inplace=True)
 	print('\tCreating precipiation dummy...')
 	df['precip_dummy'] = 0
 	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### cutoff is 1000% arbitrary
+	# return df
  
+
+
 	### Interventions
 	print('Reading interventions data...')
 	interventions = read_file.read_interventions()
@@ -81,38 +97,24 @@ def build_df():
 			# df['int_' + c] = 0
 			# df.loc[df[c] >= df['date'], 'int_' + c] = 1			
 
-<<<<<<< HEAD
-	### vote share
-	print('reading vote share...')
-	votes = read_file.read_votes()
-	df = df.merge(votes, how='outer', on='fips', indicator=True)
-	# return df
-
-=======
 	### Vote share
 	print('Reading vote share data...')
 	votes = read_file.read_votes()
 	df = df.merge(votes, how='left', on='fips')
->>>>>>> 1244d8331f2d9dc1edc64cadc949f2ca3942e862
+
+	return df
 
 	## Making additional features
 	df = make_features(df)
 
 	# Drop excess columns
-	df.drop([c for c in df.columns if c.startswith('lag')],
+	df.drop([c for c in df.columns if c.startswith('chg')],
 		axis=1, inplace=True, errors='raise')
-<<<<<<< HEAD
-	df.drop(['CountyFIPS', 'state'], axis=1, inplace=True, errors='raise')
-
-	print('outputting csv..')
-	df.to_csv('../full_df.csv', index=False)
-=======
 	df.drop(columns=['state_x','state_y','CountyFIPS',
 					 'totalvotes','area'], inplace=True)
 	
 	print('Outputting csv..')
 	df.to_csv('../output/full_df.csv', index=False)
->>>>>>> 1244d8331f2d9dc1edc64cadc949f2ca3942e862
 
 	return df
 
@@ -120,7 +122,14 @@ def build_df():
 def make_features(df):
 	df['pop_density'] = df['pop'] / df['area']
 	df['cases_per_pop'] = df['cases'] / df['pop']
-	#df['cases_per_area'] = df['cases'] / df['area']
+	df['cases_per_area'] = df['cases'] / df['area']
 	df['deaths_per_pop'] = df['deaths'] / df['pop']
-	#df['deaths_per_area'] = df['deaths'] / df['area']
+	df['deaths_per_area'] = df['deaths'] / df['area']
+
+	### weekday
+	df['dayofweek'] = df['date'].apply(lambda x: x.dayofweek)
+	week_dummies = pd.get_dummies(df['dayofweek'], prefix='dayofweek')
+	for c in week_dummies.columns:
+		df[c] = week_dummies[c]
+
 	return df
