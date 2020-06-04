@@ -174,9 +174,9 @@ data_raw/2020.csv
 data_raw/2020.csv.gz
 data_intermediate/noaa.csv
 output/data/Data - Train*.joblib
-output/models_and_predictions_pca/KNeighborsRegressor - Model *.joblib
-output/models_and_predictions_nopca/KNeighborsRegressor - Model *.joblib
-output/models_and_predictions_pca/RandomForestRegressor - Model *.joblib
-output/models_and_predictions_nopca/RandomForestRegressor - Model *.joblib
+output/models_predictions_pca/KNeighborsRegressor - Model *.joblib
+output/models_predictions_nopca/KNeighborsRegressor - Model *.joblib
+output/models_predictions_pca/RandomForestRegressor - Model *.joblib
+output/models_predictions_nopca/RandomForestRegressor - Model *.joblib
 output/data/full_df.csv
 +Archive/
