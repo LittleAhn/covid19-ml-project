@@ -61,18 +61,27 @@ def build_df():
 			df[c].fillna(vals, inplace=True)
 	print('\tCreating precipiation dummy...')
 	df['precip_dummy'] = 0
-	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 
-
-	### Interventions
-	print('Reading interventions data...')
+	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### cutoff is 1000% arbitrary
+ 
+	### interventions
+	print('reading interventions...')
 	interventions = read_file.read_interventions()
 	df = df.merge(interventions, on='fips', how='left')
-	df.drop(['STATE', 'AREA_NAME',], axis=1, inplace=True, errors='raise')
+	df.drop(['STATE', 'AREA_NAME', 'StateFIPS'], axis=1, inplace=True, errors='raise')
 	print('\tTransforming intervention columns...')
 	for c in df.columns:
 		if c.startswith("int_date_"):
 			print('\tTransforming {}...'.format(c))
 			df[c].fillna(800000, inplace=True) ### arbitrary high date
+			df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))
+			df[c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
+
+	### vote share
+	votes = read_file.read_votes()
+	df = df.merge(votes, how='outer', on='fips', indicator=True)
+	return df
+
+	## making additional features
 			df.loc[:,c] = df.loc[:,c].apply(lambda x: datetime.date.fromordinal(int(x)))
 			df.loc[:,c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
 			# df['int_' + c] = 0
@@ -85,6 +94,9 @@ def build_df():
 	df.drop([c for c in df.columns if c.startswith('lag')],
 		axis=1, inplace=True, errors='raise')
 	df.drop(['CountyFIPS', 'StateFIPS', 'state'], axis=1, inplace=True, errors='raise')
+
+	print('outputting csv..')
+	df.to_csv('../full_df.csv', index=False)
 
 	return df
 
