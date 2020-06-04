@@ -45,9 +45,9 @@ def build_df():
 
 	### Kaggle extra vars
 	### Right now we're only using stay_at_home from this df
-	print('Reading / merging Kaggle data...')
-	kaggle = read_file.read_kaggle()
-	df = df.merge(kaggle, how='left', on=['fips', 'date'])
+	#print('Reading / merging Kaggle data...')
+	#kaggle = read_file.read_kaggle()
+	#df = df.merge(kaggle, how='left', on=['fips', 'date'])
 
 	### NOAA
 	print('Reading / merging NOAA weather data...')
@@ -63,8 +63,8 @@ def build_df():
 	df['precip_dummy'] = 0
 	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### cutoff is 1000% arbitrary
  
-	### interventions
-	print('reading interventions...')
+	### Interventions
+	print('Reading interventions data...')
 	interventions = read_file.read_interventions()
 	df = df.merge(interventions, on='fips', how='left')
 	df.drop(['STATE', 'AREA_NAME', 'StateFIPS'], axis=1, inplace=True, errors='raise')
@@ -81,12 +81,19 @@ def build_df():
 			# df['int_' + c] = 0
 			# df.loc[df[c] >= df['date'], 'int_' + c] = 1			
 
+<<<<<<< HEAD
 	### vote share
 	print('reading vote share...')
 	votes = read_file.read_votes()
 	df = df.merge(votes, how='outer', on='fips', indicator=True)
 	# return df
 
+=======
+	### Vote share
+	print('Reading vote share data...')
+	votes = read_file.read_votes()
+	df = df.merge(votes, how='left', on='fips')
+>>>>>>> 1244d8331f2d9dc1edc64cadc949f2ca3942e862
 
 	## Making additional features
 	df = make_features(df)
@@ -94,10 +101,18 @@ def build_df():
 	# Drop excess columns
 	df.drop([c for c in df.columns if c.startswith('lag')],
 		axis=1, inplace=True, errors='raise')
+<<<<<<< HEAD
 	df.drop(['CountyFIPS', 'state'], axis=1, inplace=True, errors='raise')
 
 	print('outputting csv..')
 	df.to_csv('../full_df.csv', index=False)
+=======
+	df.drop(columns=['state_x','state_y','CountyFIPS',
+					 'totalvotes','area'], inplace=True)
+	
+	print('Outputting csv..')
+	df.to_csv('../output/full_df.csv', index=False)
+>>>>>>> 1244d8331f2d9dc1edc64cadc949f2ca3942e862
 
 	return df
 
@@ -105,7 +120,7 @@ def build_df():
 def make_features(df):
 	df['pop_density'] = df['pop'] / df['area']
 	df['cases_per_pop'] = df['cases'] / df['pop']
-	df['cases_per_area'] = df['cases'] / df['area']
+	#df['cases_per_area'] = df['cases'] / df['area']
 	df['deaths_per_pop'] = df['deaths'] / df['pop']
-	df['deaths_per_area'] = df['deaths'] / df['area']
+	#df['deaths_per_area'] = df['deaths'] / df['area']
 	return df
