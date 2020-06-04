@@ -29,7 +29,7 @@ def main():
 
 	print("convert temperatures to farenheit")
 	for c in ['TMAX', 'TMIN']:
-		df.loc[:,c] = df[c].apply(lambda x: (x/10) * (5/9) + 32)
+		df.loc[:,c] = df[c].apply(lambda x: (x/10) * (9/5) + 32)
 
 	print('merging on areas..')
 	counties = read_shape()
