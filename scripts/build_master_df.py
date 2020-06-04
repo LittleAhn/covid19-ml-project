@@ -22,7 +22,7 @@ def build_df():
 	geodf['area'] = geodf.geometry.apply(lambda x: x.area)
 	geodf['fips'] = geodf['STATEFP'] + geodf['COUNTYFP']
 	print('Merging on areas')
-	df = df.merge(geodf[['fips', 'area']], how='left', on='fips', indicator=True)
+	df = df.merge(geodf[['fips', 'area']], how='left', on='fips')
 
 	### NAICS data
 	print('Reading / merging NAICS business pattern data...')
