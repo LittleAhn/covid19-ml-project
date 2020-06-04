@@ -75,17 +75,18 @@ def build_df():
 			df[c].fillna(800000, inplace=True) ### arbitrary high date
 			df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))
 			df[c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
-
-	### vote share
-	votes = read_file.read_votes()
-	df = df.merge(votes, how='outer', on='fips', indicator=True)
-	return df
-
 	## making additional features
-			df.loc[:,c] = df.loc[:,c].apply(lambda x: datetime.date.fromordinal(int(x)))
-			df.loc[:,c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
+			# df.loc[:,c] = df.loc[:,c].apply(lambda x: datetime.date.fromordinal(int(x)))
+			# df.loc[:,c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
 			# df['int_' + c] = 0
 			# df.loc[df[c] >= df['date'], 'int_' + c] = 1			
+
+	### vote share
+	print('reading vote share...')
+	votes = read_file.read_votes()
+	df = df.merge(votes, how='outer', on='fips', indicator=True)
+	# return df
+
 
 	## Making additional features
 	df = make_features(df)
@@ -93,7 +94,7 @@ def build_df():
 	# Drop excess columns
 	df.drop([c for c in df.columns if c.startswith('lag')],
 		axis=1, inplace=True, errors='raise')
-	df.drop(['CountyFIPS', 'StateFIPS', 'state'], axis=1, inplace=True, errors='raise')
+	df.drop(['CountyFIPS', 'state'], axis=1, inplace=True, errors='raise')
 
 	print('outputting csv..')
 	df.to_csv('../full_df.csv', index=False)
