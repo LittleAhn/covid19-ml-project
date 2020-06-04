@@ -43,12 +43,6 @@ def build_df():
 	df = df.merge(cases, how='left', on=['date', 'fips'])
 	df = df.merge(deaths, how='left', on=['date', 'fips'])
 
-	### Kaggle extra vars
-	### Right now we're only using stay_at_home from this df
-	#print('Reading / merging Kaggle data...')
-	#kaggle = read_file.read_kaggle()
-	#df = df.merge(kaggle, how='left', on=['fips', 'date'])
-
 	### NOAA
 	print('Reading / merging NOAA weather data...')
 	noaa = read_file.read_noaa()
