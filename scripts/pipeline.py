@@ -56,6 +56,7 @@ def get_train_test(df, train_size=0.8, random_state=1, time_series=False, valida
     for training size and random seed. Ignores the potential need
     for a validation set.
     '''
+
     # Check pandas df
     if isinstance(df, pd.DataFrame):
 
@@ -68,14 +69,15 @@ def get_train_test(df, train_size=0.8, random_state=1, time_series=False, valida
         elif time_series:
             df['date'] = df['date'].astype('datetime64')
             traincutoff = df['date'].astype('datetime64').quantile(train_size)
-            train = df[df['date'] <= traincutoff].drop(columns='date')
+            train = df[df['date'] <= traincutoff]#.drop(columns='date')
             if not validation:
-                test  = df[df['date'] >  traincutoff].drop(columns='date')
+                test  = df[df['date'] >  traincutoff]#.drop(columns='date')
                 return (train, test)
             elif validation:
                 validationcutoff = df['date'].astype('datetime64').quantile(train_size+(1-train_size)/2.)
-                validation = df[(df['date'] >  traincutoff) & (df['date'] <= validationcutoff)].drop(columns='date')
-                test  = df[df['date'] > validationcutoff].drop(columns='date')
+                validation = df[(df['date'] >  traincutoff) & (df['date'] <= validationcutoff)]#.drop(columns='date')
+                test  = df[df['date'] > validationcutoff]#.drop(columns='date')
+
                 return (train, validation, test)
                     
     else: 
