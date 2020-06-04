@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -91,10 +90,19 @@ def build_df():
 	df.drop([c for c in df.columns if c.startswith('chg')],
 		axis=1, inplace=True, errors='raise')
 	df.drop(columns=['state_x','state_y','CountyFIPS',
-					 'totalvotes','area'], inplace=True)
-	
+					 'totalvotes','dayofweek'], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag1')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag3')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag5')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('3d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('workplaces_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('residential_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('parks_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('grocery_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('transit_7d_avg')], inplace=True)
+
 	print('Outputting csv..')
-	df.to_csv('../output/full_df.csv', index=False)
+	df.to_csv('../output/data/full_df.csv', index=False)
 
 	return df
 
