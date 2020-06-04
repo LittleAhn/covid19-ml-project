@@ -29,8 +29,6 @@ def build_and_split_master_df(save_path):
 
     # Get full dataset for use and drop unnecessary variables
     df = raw.dropna(subset=[main_target])[features+[main_target]+['date']]
-    df.drop(columns=['state_x','state_y','precip_dummy_x','precip_dummy_y','county',
-                    'stay_at_home_announced','stay_at_home_effective'], inplace=True)
 
     # Split train test 
     train_full,validation_full,test_full = pipeline.get_train_test(df,train_size=0.8,
