@@ -10,8 +10,6 @@ ROOT = join(dirname(dirname(abspath(__file__))))
 INT = join(ROOT, 'data_intermediate')
 RAW = join(ROOT, 'data_raw')
 
-
-
 def read_target():
 	"""
 	loads google mobility data merged with FIPS
@@ -19,9 +17,7 @@ def read_target():
 
 	df = pd.read_csv(join(INT, 'us_mobility.csv'))
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
-	# df['CountyFIPS'] = df['CountyFIPS'].apply(lambda x: utils.prepend_0s(str(x), 3))
 	df['StateFIPS'] = df['StateFIPS'].apply(lambda x: utils.prepend_0s(str(x), 2))
-	# df['fips'] = df['StateFIPS'] + df['CountyFIPS']
 	df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
 	return df
@@ -41,7 +37,10 @@ def read_NAICS():
 	"""
 	df = pd.read_csv(join(INT, "NAICS.csv"))
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
-
+	df.drop(columns=['interpolate_val','state'], inplace=True)
+	for col in set(df.columns):
+		if col not in ['fips']:
+			df.rename(columns={col:f"NAICS {col}"}, inplace=True)
 	return df
 
 
@@ -87,7 +86,6 @@ def read_votes():
 def read_health():
 
 	health_fips = pd.read_csv(join(INT, 'health_fips.csv'))
-	# health_fips.rename({'FIPS_ID': 'fips'}, axis=1, inplace=True, errors='raise')
 	health_fips['fips'] = health_fips['FIPS_ID'].apply(lambda x: utils.prepend_0s(str(x), 5))
 
 	health_fips.loc[health_fips['fips'] == '15901', 'fips'] = '15009'

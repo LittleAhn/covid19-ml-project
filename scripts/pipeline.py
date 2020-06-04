@@ -1,12 +1,14 @@
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score,f1_score,precision_score,recall_score
+from sklearn.metrics import accuracy_score,f1_score,precision_score,recall_score,mean_squared_error,mean_absolute_error
+from joblib import dump
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
 import datetime
 import os
+import pickle
 
 def read_data(df, csvsep=","):
     '''
@@ -124,7 +126,7 @@ def get_categorical_tables(df, pairwise=False, maxlevels=20):
         raise TypeError("df must be a pandas DataFrame object")
 
 
-def get_train_test(df, train_size=0.8, random_state=1):
+def get_train_test(df, train_size=0.8, random_state=1, time_series=False):
     '''
     Calls sklearn's train_test_split on an input df and returns 
     the resulting train and test set DataFrames. Takes in parameters
@@ -133,9 +135,18 @@ def get_train_test(df, train_size=0.8, random_state=1):
     '''
     # Check pandas df
     if isinstance(df, pd.DataFrame):
-        train, test = train_test_split(df, train_size=train_size, 
-                                       test_size=1-train_size, 
-                                       random_state=random_state)
+
+        # Non-time series split
+        if not time_series:
+            train, test = train_test_split(df, train_size=train_size, 
+                                            test_size=1-train_size, 
+                                            random_state=random_state)
+        elif time_series:
+            df['date'] = df['date'].astype('datetime64')
+            cutoff = df['date'].astype('datetime64').quantile(0.8)
+            train = df[df['date'] <= cutoff].drop(columns='date')
+            test  = df[df['date'] >  cutoff].drop(columns='date')
+                    
         return (train, test)
     else: 
         raise TypeError("df must be a pandas DataFrame object")
@@ -345,6 +356,70 @@ def build_classifiers(models, params_grid,
                                    columns=["Model","Parameters",
                                             "Accuracy","F1 Score",
                                              "Precision", "Recall"])
+            results = results.append(newrow)
+            
+    # End timer
+    stop = datetime.datetime.now()
+    print("Time Elapsed For All Fitting and Prediction:", stop - start)
+
+    return results        
+
+def build_regressors(models, params_grid, 
+                      train_features, train_outcome, 
+                      test_features, test_outcome,
+                      save_path):
+    '''
+    Trains a number of models and returns a DataFrame 
+    of these models and their resulting evaluation metrics.
+    Parameters:
+     models - dictionary of sklearn models to fit
+     parameters - dictionary of parameters to test for each of above models
+     train_features, train_outcome - training data (pd.DataFrame)
+     test_features, test_outcome - test data (pd.DataFrame) 
+    '''
+    # Begin timer 
+    start = datetime.datetime.now()
+
+    # Initialize results data frame 
+    results = pd.DataFrame(columns=["Model","Parameters",
+                                    "MSE","MAE"])
+
+    # Loop over models 
+    for model_key in models.keys(): 
+        
+        # Loop over parameters 
+        for idx,params in enumerate(params_grid[model_key]): 
+            
+            # Create model 
+            model = models[model_key]
+            model.set_params(**params)
+
+            # Start timing for fit
+            startmodel = datetime.datetime.now()
+            print("\tTraining:", model_key, "|", params)
+
+            # Fit model on training set 
+            model.fit(train_features, train_outcome)
+
+            # Predict on testing set 
+            test_pred = model.predict(test_features)
+
+            # Save results
+            dump(model, save_path+f"/{model_key} - Model {idx}.joblib")
+            dump(test_pred, save_path+f"/{model_key} - Predictions {idx}.joblib")
+
+            # Finish timing
+            endmodel = datetime.datetime.now()
+            print("\tTime elapsed to train and predict: ",endmodel-startmodel,"\n")
+
+            # Evaluate predictions 
+            MSE = mean_squared_error(test_outcome,test_pred)
+            MAE = mean_absolute_error(test_outcome,test_pred)
+
+            # Store results in your results data frame 
+            newrow = pd.DataFrame([[model_key,params,MSE,MAE]],
+                                   columns=["Model","Parameters",
+                                            "MSE","MAE"])
             results = results.append(newrow)
             
     # End timer
