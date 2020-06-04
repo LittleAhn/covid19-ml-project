@@ -50,7 +50,7 @@ def read_noaa():
 	load NOAA data
 	"""
 	df = pd.read_csv(join(INT, 'noaa.csv'))
-	df['fips'] = df['countyFIPS'].apply(
+	df['fips'] = df['fips'].apply(
 		lambda x: utils.prepend_0s(str(x), 5))	
 	df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
@@ -73,6 +73,15 @@ def read_CDC():
 	# 	lambda x: utils.prepend_0s(str(x), 5))
 	
 	return cases, deaths
+
+
+def read_votes():
+
+	df = pd.read_csv(join(INT, 'votes.csv'))
+	df['fips'] = df['fips'].apply(
+		lambda x: utils.prepend_0s(str(x)[:str(x).find('.')], 5))
+
+	return df
 
 
 def read_health():

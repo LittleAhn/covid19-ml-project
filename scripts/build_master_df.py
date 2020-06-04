@@ -71,14 +71,13 @@ def build_df():
 	print('    creating precipiation dummy...')
 	df['precip_dummy'] = 0
 	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### cutoff is 1000% arbitrary
-
-# 
+ 
 	### interventions
 	print('reading interventions...')
 	interventions = read_file.read_interventions()
 	print('merging interventions...')
 	df = df.merge(interventions, on='fips', how='left')
-	df.drop(['STATE', 'AREA_NAME', 'state', 'StateFIPS'], axis=1, inplace=True, errors='raise')
+	df.drop(['STATE', 'AREA_NAME', 'StateFIPS'], axis=1, inplace=True, errors='raise')
 	print('transforming intervention columns...')
 	for c in df.columns:
 		if c.startswith("int_date_"):
@@ -86,10 +85,12 @@ def build_df():
 			df[c].fillna(800000, inplace=True) ### arbitrary high date
 			df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))
 			df[c] = df.apply(lambda x: x[c] <= x['date'], axis=1).astype('int')
-			# df['int_' + c] = 0
-			# df.loc[df[c] >= df['date'], 'int_' + c] = 1			
 
+	### vote share
+	votes = read_file.read_votes()
+	df = df.merge(votes, how='outer', on='fips', indicator=True)
 	return df
+
 	## making additional features
 	df = make_features(df)
 
@@ -97,6 +98,9 @@ def build_df():
 		axis=1, inplace=True, errors='raise')
 
 	df.drop(['state_x', 'state_y', 'CountyFIPS'], axis=1, inplace=True, errors='raise')
+
+	print('outputting csv..')
+	df.to_csv('../full_df.csv', index=False)
 
 	return df
 
