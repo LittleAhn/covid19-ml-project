@@ -70,7 +70,6 @@ def fit_and_eval_models(train_features,train_target,
         'Lasso': Lasso(),
         'RandomForestRegressor': RandomForestRegressor(),
         'AdaBoostRegressor':AdaBoostRegressor(),
-        'KNeighborsRegressor':KNeighborsRegressor()
     }
     GRID = {
         'LinearRegression': [{}],
