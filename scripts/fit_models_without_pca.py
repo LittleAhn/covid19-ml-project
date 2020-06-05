@@ -28,28 +28,33 @@ def build_and_split_master_df(save_path):
     features     = [col for col in raw.columns if (col not in index_vars) and (col not in target_vars)]
 
     # Get full dataset for use and drop unnecessary variables
-    df = raw.dropna(subset=[main_target])[features+[main_target]+['date']]
+    df = raw.dropna(subset=[main_target])
 
     # Split train test 
     train_full,validation_full,test_full = pipeline.get_train_test(df,train_size=0.8,
-                                                                time_series=True,validation=True)
+                                                                    time_series=True,validation=True)
     train_target = train_full[main_target]
     validation_target = validation_full[main_target]
     test_target = test_full[main_target]
-    train_features = train_full.drop(columns=[main_target])
-    validation_features = validation_full.drop(columns=[main_target])
-    test_features = test_full.drop(columns=[main_target])
+    train_features = train_full[features]
+    validation_features = validation_full[features]
+    test_features = test_full[features]
 
     # Impute and normalize
     train_features,validation_features,test_features = pipeline.impute_missing(train_features,test_features,
-                                                                               validation_features,how='median')
+                                                                                validation_features,how='median')
     train_features,validation_features,test_features = pipeline.normalize_vars(train_features,test_features,
-                                                                               validation_features)
+                                                                                validation_features)
+
+    # Make dfs to save in output
+    train_out = pd.concat((train_full[index_vars], train_features), axis=1)
+    validation_out = pd.concat((validation_full[index_vars], validation_features), axis=1)
+    test_out = pd.concat((test_full[index_vars], test_features), axis=1)
 
     # Save output
-    dump(train_features, save_path+"/Data - Train Features.joblib")
-    dump(validation_features, save_path+"/Data - Validation Features.joblib")
-    dump(test_features, save_path+"/Data - Test Features.joblib")
+    dump(train_out, save_path+"/Data - Train Features.joblib")
+    dump(validation_out, save_path+"/Data - Validation Features.joblib")
+    dump(test_out, save_path+"/Data - Test Features.joblib")
     dump(train_target, save_path+"/Data - Train Target.joblib")
     dump(validation_target, save_path+"/Data - Validation Target.joblib")
     dump(test_target, save_path+"/Data - Test Target.joblib")                              
