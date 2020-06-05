@@ -56,6 +56,7 @@ def get_train_test(df, train_size=0.8, random_state=1, time_series=False, valida
     for training size and random seed. Ignores the potential need
     for a validation set.
     '''
+
     # Check pandas df
     if isinstance(df, pd.DataFrame):
 
