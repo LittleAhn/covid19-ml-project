@@ -139,5 +139,5 @@ if __name__ == "__main__":
     
     # Sort and save results
     model_results = model_results.sort_values('MAE')
-    model_results.to_csv("../output/model_validation_results_with_pca.csv")
+    model_results.to_csv("../output/model_validation_results_with_pca.csv", index=False)
 
