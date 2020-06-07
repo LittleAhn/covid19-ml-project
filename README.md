@@ -30,3 +30,8 @@
 - pull_noaa.py:  creates intermediate data csv for noaa weather data
 - pull_votes.py:  creates intermediate data csv for MIT Election Data
 - utils.py:  various utility functions
+
+#### Instructions
+1. Run create_intermediate_data.populate_intermediate_data()
+2. Run build_master_df.build_df()
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
