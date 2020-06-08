@@ -35,6 +35,11 @@ def main():
 	deaths = cl(deaths, 'deaths')
 
 	### create features
+	for df, var in zip((cases, deaths), ('cases', 'deaths')):
+		for window in [3, 7]:
+			df['{}_{}d_avg'.format(var, window)] = df.groupby('fips')[var].transform(
+				lambda x: x.rolling(window, 1).mean())
+
 	cases['log_cases'] = np.log(cases['cases'])
 	deaths['log_deaths'] = np.log(deaths['deaths'])
 
