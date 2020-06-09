@@ -50,14 +50,17 @@ def build_and_split_master_df(save_path):
     train_out = pd.concat((train_full[index_vars], train_features), axis=1)
     validation_out = pd.concat((validation_full[index_vars], validation_features), axis=1)
     test_out = pd.concat((test_full[index_vars], test_features), axis=1)
+    train_out_target = pd.concat((train_full[index_vars], train_target), axis=1)
+    validation_out_target = pd.concat((validation_full[index_vars], validation_target), axis=1)
+    test_out_target = pd.concat((test_full[index_vars], test_target), axis=1)
 
     # Save output
     dump(train_out, save_path+"/Data - Train Features.joblib")
     dump(validation_out, save_path+"/Data - Validation Features.joblib")
     dump(test_out, save_path+"/Data - Test Features.joblib")
-    dump(train_target, save_path+"/Data - Train Target.joblib")
-    dump(validation_target, save_path+"/Data - Validation Target.joblib")
-    dump(test_target, save_path+"/Data - Test Target.joblib")                              
+    dump(train_out_target, save_path+"/Data - Train Target.joblib")
+    dump(validation_out_target, save_path+"/Data - Validation Target.joblib")
+    dump(test_out_target, save_path+"/Data - Test Target.joblib")                              
 
     return train_features,validation_features,test_features,train_target,validation_target,test_target
 
