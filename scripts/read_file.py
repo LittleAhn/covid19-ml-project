@@ -14,7 +14,6 @@ def read_target():
 	"""
 	loads google mobility data merged with FIPS
 	"""
-
 	df = pd.read_csv(join(INT, 'us_mobility.csv'))
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
 	df['StateFIPS'] = df['StateFIPS'].apply(lambda x: utils.prepend_0s(str(x), 2))
@@ -24,6 +23,9 @@ def read_target():
 
 
 def read_ACS():
+	"""
+	load ACS data from intermediate folder
+	"""
 
 	df = pd.read_csv(join(INT, "ACS.csv"))
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
@@ -33,11 +35,11 @@ def read_ACS():
 
 def read_NAICS():
 	"""
-	loads NAICS file
+	loads NAICS file from intermediate folder
 	"""
 	df = pd.read_csv(join(INT, "NAICS.csv"))
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
-	df.drop(columns=['interpolate_val','state'], inplace=True)
+	df.drop(columns=['state'], inplace=True)
 	for col in set(df.columns):
 		if col not in ['fips']:
 			df.rename(columns={col:f"NAICS {col}"}, inplace=True)
@@ -46,7 +48,7 @@ def read_NAICS():
 
 def read_noaa():
 	"""
-	load NOAA data
+	load NOAA data from intermediate folder
 	"""
 	df = pd.read_csv(join(INT, 'noaa.csv'))
 	df['fips'] = df['fips'].apply(
@@ -56,7 +58,9 @@ def read_noaa():
 	return df
 
 def read_CDC():
-
+	"""
+	load CDC deaths and cases intermediate data folder
+	"""
 	cases = pd.read_csv(join(INT, "CDC_cases.csv"))
 	deaths = pd.read_csv(join(INT, "CDC_deaths.csv"))
 
@@ -65,16 +69,14 @@ def read_CDC():
 			lambda x: utils.prepend_0s(str(x), 5))
 		df.drop('countyFIPS', axis=1, inplace=True)
 		df['date'] = pd.to_datetime(df['date'], format='%m/%d/%y')
-
-	# cases['fips'] = cases['countyFIPS'].apply(
-	# 	lambda x: utils.prepend_0s(str(x), 5))
-	# deaths['fips'] = deaths['countyFIPS'].apply(
-	# 	lambda x: utils.prepend_0s(str(x), 5))
 	
 	return cases, deaths
 
 
 def read_votes():
+	"""
+	load election data from intermediate data folder
+	"""
 
 	df = pd.read_csv(join(INT, 'votes.csv'))
 	df['fips'] = df['fips'].apply(
@@ -84,6 +86,9 @@ def read_votes():
 
 
 def read_health():
+	"""
+	loads health data from intermediate folder
+	"""
 
 	health_fips = pd.read_csv(join(INT, 'health_fips.csv'))
 	health_fips['fips'] = health_fips['FIPS_ID'].apply(lambda x: utils.prepend_0s(str(x), 5))
@@ -110,14 +115,6 @@ def read_health():
 	return health_fips, health_st
 
 
-def read_kaggle():
-
-	df = pd.read_csv(join(INT, 'cl_kaggle.csv'))
-	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
-	df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
-
-	return df
-
 def read_interventions():
 
 	# file = 'https://raw.githubusercontent.com/JieYingWu/COVID-19_US_County-level_Summaries/master/data/interventions.csv'
@@ -131,7 +128,13 @@ def read_interventions():
 	return df
 
 
+# def read_kaggle():
 
+# 	df = pd.read_csv(join(INT, 'cl_kaggle.csv'))
+# 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
+# 	df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
+
+# 	return df
 
 
 # def read_NYT():

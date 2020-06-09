@@ -144,7 +144,6 @@ def rename_acs_cols(df):
 		items = r.split(':')
 		k = items[0].strip()
 		v = items[1].strip()
-		print(type(k), type(v))
 		renames[k] = v
 
 	df.rename(renames, axis=1, inplace=True, errors='raise')

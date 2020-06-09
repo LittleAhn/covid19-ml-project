@@ -9,13 +9,15 @@ RAW = join(ROOT, 'data_raw')
 
 file = 'https://raw.githubusercontent.com/JieYingWu/COVID-19_US_County-level_Summaries/master/data/interventions.csv'
 
-def read_file():
+def execute():
+	"""
+	basic cleaning and transformations for interventions data
+	"""
 
 	df = pd.read_csv(file)
 
 	df.drop(['stay at home', '>50 gatherings', '>500 gatherings', 'entertainment/gym'],
 		axis=1, inplace=True, errors='raise')
-	# date = datetime.date.fromordinal
 
 	names = {c: 'int_date_' + c for c in df.columns if c not in ['FIPS', 'STATE', 'AREA_NAME']}
 	df.rename(names, axis=1, inplace=True, errors='raise')
@@ -26,6 +28,10 @@ def read_file():
 
 
 def transform_dates(df, c):
+	"""
+	transforms columns that contain ordinal date into a dummy
+	where the value is 0 if its before the date and 1 if its after
+	"""
 
 	df[c].fillna(800000, inplace=True) ### arbitrary high date
 	df[c] = df[c].apply(lambda x: datetime.date.fromordinal(int(x)))

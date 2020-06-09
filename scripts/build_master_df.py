@@ -87,19 +87,8 @@ def build_df():
 	df = make_features(df)
 
 	# Drop excess columns
-	df.drop([c for c in df.columns if c.startswith('chg')],
-		axis=1, inplace=True, errors='raise')
-	df.drop(columns=['state_x','state_y','CountyFIPS',
-					 'totalvotes','dayofweek'], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.startswith('lag1')], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.startswith('lag3')], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.startswith('lag5')], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.endswith('3d_avg')], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.endswith('workplaces_7d_avg')], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.endswith('residential_7d_avg')], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.endswith('parks_7d_avg')], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.endswith('grocery_7d_avg')], inplace=True)
-	df.drop(columns=[col for col in df.columns if col.endswith('transit_7d_avg')], inplace=True)
+	df = drop_features(df)
+
 
 	print('Outputting csv..')
 	df.to_csv('../output/data/full_df.csv', index=False)
@@ -119,5 +108,24 @@ def make_features(df):
 	week_dummies = pd.get_dummies(df['dayofweek'], prefix='dayofweek')
 	for c in week_dummies.columns:
 		df[c] = week_dummies[c]
+
+	return df
+
+
+def drop_features(df):
+
+	df.drop([c for c in df.columns if c.startswith('chg')],
+		axis=1, inplace=True, errors='raise')
+	df.drop(columns=['state_x','state_y','CountyFIPS',
+					 'totalvotes','dayofweek'], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag1')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag3')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.startswith('lag5')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('3d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('workplaces_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('residential_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('parks_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('grocery_7d_avg')], inplace=True)
+	df.drop(columns=[col for col in df.columns if col.endswith('transit_7d_avg')], inplace=True)
 
 	return df

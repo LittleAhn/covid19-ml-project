@@ -53,7 +53,7 @@ def get_fips_crosswalk():
 def load_mobility():
 
 	# Import and subset data
-	mobility = pd.read_csv(join(RAW, "Google Mobility.csv"), low_memory=False)
+	mobility = pd.read_csv(join(RAW, "google_mobility.csv"), low_memory=False)
 	mobility = mobility[mobility['country_region'] == 'United States'].drop(
 		columns=['country_region', 'country_region_code'])
 	mobility.loc[mobility['sub_region_1'] == 'District of Columbia', \
@@ -94,8 +94,6 @@ def create_lag_features(df, varnames):
 	df.set_index(['date', 'fips'], inplace=True)
 	df.sort_index(inplace=True)
 
-	print(df.columns)
-	print(varnames)
 	for lag in [1, 3, 5, 7, 10]:
 		print('\tLag num', lag)
 		lagged = df[varnames].groupby(level='fips').shift(lag)
