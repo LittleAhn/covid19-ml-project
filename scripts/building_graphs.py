@@ -171,6 +171,7 @@ def mae_bar():
 	mae = pd.concat([with_pca_min, without_pca_min])
 	sns.set(rc={'figure.figsize':(18, 5)})
 	ax = sns.barplot(x=mae.index, y='MAE', hue="PCA", data=mae)
-	plt.title('MAE Comparison Between Models', fontsize=18)
+	plt.xlabel("Best Models", fontsize=13)
+	plt.title('Mean Absolute Error for Best Models by Type', fontsize=18)
 	plt.legend(fontsize=20)
 	plt.savefig('../output/graphs/MAEs/mae_bar.png')
