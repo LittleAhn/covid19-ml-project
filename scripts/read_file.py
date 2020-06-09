@@ -39,7 +39,7 @@ def read_NAICS():
 	"""
 	df = pd.read_csv(join(INT, "NAICS.csv"))
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
-	df.drop(columns=['interpolate_val','state'], inplace=True)
+	df.drop(columns=['state'], inplace=True)
 	for col in set(df.columns):
 		if col not in ['fips']:
 			df.rename(columns={col:f"NAICS {col}"}, inplace=True)
