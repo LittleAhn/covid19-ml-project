@@ -85,6 +85,14 @@ def get_pca_reduction(train_features,validation_features,test_features,save_path
     validation_pca_features = pca.transform(validation_features)
     test_pca_features  = pca.transform(test_features)
 
+    # Reformat output into dataframes
+    train_pca_features = pd.DataFrame(train_pca_features) 
+    validation_pca_features = pd.DataFrame(validation_pca_features) 
+    test_pca_features = pd.DataFrame(test_pca_features) 
+    train_pca_features.index   = train_features.index
+    validation_pca_features.index   = validation_features.index
+    test_pca_features.index   = test_features.index
+
     # Save output
     dump(train_pca_features, save_path+"/Data - Train Features PCA.joblib")
     dump(validation_pca_features, save_path+"/Data - Validation Features PCA.joblib")

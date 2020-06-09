@@ -67,7 +67,7 @@ def get_train_test(df, train_size=0.8, random_state=1, time_series=False, valida
                                             random_state=random_state)
             return (train, test)
         elif time_series:
-            df['date'] = df['date'].astype('datetime64')
+            df.loc[:,'date'] = df['date'].astype('datetime64')
             traincutoff = df['date'].astype('datetime64').quantile(train_size)
             train = df[df['date'] <= traincutoff]
             if not validation:
