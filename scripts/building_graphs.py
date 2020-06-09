@@ -164,12 +164,13 @@ def mae_bar():
 	fig, ax = plt.subplots()
 	with_pca = pd.read_csv('../output/model_validation_results_with_pca.csv')
 	without_pca = pd.read_csv('../output/model_validation_results_without_pca.csv')
-	with_pca['PCA'] = 'with_pca'
-	without_pca['PCA'] = 'without_pca'
+	with_pca['PCA'] = 'PCA'
+	without_pca['PCA'] = 'No PCA'
 	with_pca_min = with_pca.groupby('Model').min()
 	without_pca_min = without_pca.groupby('Model').min()
 	mae = pd.concat([with_pca_min, without_pca_min])
 	sns.set(rc={'figure.figsize':(18, 5)})
 	ax = sns.barplot(x=mae.index, y='MAE', hue="PCA", data=mae)
 	plt.title('MAE Comparison Between Models', fontsize=18)
+	plt.legend(fontsize=20)
 	plt.savefig('../output/graphs/MAEs/mae_bar.png')
