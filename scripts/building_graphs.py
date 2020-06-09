@@ -12,6 +12,7 @@ def graphs_main():
 	line = lines(df)
 	matrix = matrixs(df)
 	counties_line = counties_lines(df)
+	mae = mae_bar()
 	maps = map(df)
 	return
 
@@ -35,6 +36,7 @@ def bars(df):
 
 
 def lines(df):
+	fig, ax = plt.subplots()
 	df1 = df[df['retail_and_recreation_percent_change_from_baseline'].isnull()].groupby('date')['fips'].count()/ df.groupby('date')['fips'].count() * 100
 	df1.plot(linewidth=0.8, label='Retail & Recreation')
 	df2 = df[df['grocery_and_pharmacy_percent_change_from_baseline'].isnull()].groupby('date')['fips'].count() / df.groupby('date')['fips'].count() * 100
@@ -156,3 +158,18 @@ def counties_lines(df):
 	plt.savefig('../output/graphs/matrix_predictions_counties/park_tmax_line.png')
 
 	return
+
+
+def mae_bar():
+	fig, ax = plt.subplots()
+	with_pca = pd.read_csv('../output/model_validation_results_with_pca.csv')
+	without_pca = pd.read_csv('../output/model_validation_results_without_pca.csv')
+	with_pca['PCA'] = 'with_pca'
+	without_pca['PCA'] = 'without_pca'
+	with_pca_min = with_pca.groupby('Model').min()
+	without_pca_min = without_pca.groupby('Model').min()
+	mae = pd.concat([with_pca_min, without_pca_min])
+	sns.set(rc={'figure.figsize':(18, 5)})
+	ax = sns.barplot(x=mae.index, y='MAE', hue="PCA", data=mae)
+	plt.title('MAE Comparison Between Models', fontsize=18)
+	plt.savefig('../output/graphs/MAEs/mae_bar.png')
