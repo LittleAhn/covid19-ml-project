@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import warnings
+import chart_results
 warnings.filterwarnings('ignore')
 
 def graphs_main():
@@ -177,5 +178,6 @@ def mae_bar():
 	plt.savefig('../output/plot/MAEs/mae_bar.png')
 
 
+def mae_map():
+	mae = chart_results.create_county_MAE()
 
-	

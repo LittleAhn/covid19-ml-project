@@ -309,5 +309,23 @@ def create_county_MAE():
 	return preds_pca, preds_nopca
 
 
+def mae_bar():
+	fig, ax = plt.subplots()
+	with_pca = pd.read_csv('../output/model_validation_results_with_pca.csv')
+	without_pca = pd.read_csv('../output/model_validation_results_without_pca.csv')
+	with_pca['PCA'] = 'PCA'
+	without_pca['PCA'] = 'No PCA'
+	with_pca_min = with_pca.groupby('Model').min()
+	without_pca_min = without_pca.groupby('Model').min()
+	mae = pd.concat([with_pca_min, without_pca_min])
+	sns.set(rc={'figure.figsize':(18, 5)})
+	ax = sns.barplot(x=mae.index, y='MAE', hue="PCA", data=mae)
+	plt.xlabel("Best Models", fontsize=13)
+	plt.title('Mean Absolute Error for Best Models by Type', fontsize=18)
+	plt.legend(fontsize=20)
+	plt.savefig('../output/plot/MAEs/mae_bar.png')
+
+
+
 
 	
