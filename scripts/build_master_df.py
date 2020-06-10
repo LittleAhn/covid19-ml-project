@@ -89,7 +89,6 @@ def build_df():
 	# Drop excess columns
 	df = drop_features(df)
 
-
 	print('Outputting csv..')
 	df.to_csv('../output/data/full_df.csv', index=False)
 

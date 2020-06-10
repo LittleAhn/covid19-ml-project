@@ -12,14 +12,17 @@ import numpy as np
 import pandas as pd
 
 
-def build_and_split_master_df(save_path):
+def get_master_df():
     """
-    Function to call other scripts that build the final dataset.
-    This also does some processing, such as doing a train-test
-    split. (where test data = 20% most recent dates observed)
+    Function to build master dataset by calling 'build_master_df' py file
     """
-
     raw = build_master_df.build_df()
+    return raw
+
+def split_master_df(raw, save_path, validation_low, validation_high):
+    """
+    Function to get train / validation / test sets.
+    """
 
     # Identify variables
     index_vars   = ['StateName','CountyName','fips','date']
@@ -31,8 +34,10 @@ def build_and_split_master_df(save_path):
     df = raw.dropna(subset=[main_target])
 
     # Split train test 
-    train_full,validation_full,test_full = pipeline.get_train_test(df,train_size=0.8,
-                                                                    time_series=True,validation=True)
+    train_full,validation_full,test_full = pipeline.get_train_test(df, test_size=0.1,
+                                                                    time_series=True, validation=True,
+                                                                    validation_low=validation_low,
+                                                                    validation_high=validation_high)
     train_target = train_full[main_target]
     validation_target = validation_full[main_target]
     test_target = test_full[main_target]
@@ -55,17 +60,18 @@ def build_and_split_master_df(save_path):
     test_out_target = pd.concat((test_full[index_vars], test_target), axis=1)
 
     # Save output
-    dump(train_out, save_path+"/Data - Train Features.joblib")
-    dump(validation_out, save_path+"/Data - Validation Features.joblib")
-    dump(test_out, save_path+"/Data - Test Features.joblib")
-    dump(train_out_target, save_path+"/Data - Train Target.joblib")
-    dump(validation_out_target, save_path+"/Data - Validation Target.joblib")
-    dump(test_out_target, save_path+"/Data - Test Target.joblib")                              
+    dump(train_out, save_path+f"/Data - Train Features {validation_low} {validation_high}.joblib")
+    dump(validation_out, save_path+f"/Data - Validation Features {validation_low} {validation_high}.joblib")
+    dump(test_out, save_path+f"/Data - Test Features.joblib")
+    dump(train_out_target, save_path+f"/Data - Train Target {validation_low} {validation_high}.joblib")
+    dump(validation_out_target, save_path+f"/Data - Validation Target {validation_low} {validation_high}.joblib")
+    dump(test_out_target, save_path+f"/Data - Test Target.joblib")                              
 
     return train_features,validation_features,test_features,train_target,validation_target,test_target
 
 
-def get_pca_reduction(train_features,validation_features,test_features,save_path):
+def get_pca_reduction(train_features,validation_features,test_features,save_path,
+                      validation_low,validation_high):
     """
     Gets a dimensionality-reduced version of datasets
     using PCA. Chooses number of components so as to 
@@ -94,8 +100,8 @@ def get_pca_reduction(train_features,validation_features,test_features,save_path
     test_pca_features.index   = test_features.index
 
     # Save output
-    dump(train_pca_features, save_path+"/Data - Train Features PCA.joblib")
-    dump(validation_pca_features, save_path+"/Data - Validation Features PCA.joblib")
+    dump(train_pca_features, save_path+f"/Data - Train Features PCA {validation_low} {validation_high}.joblib")
+    dump(validation_pca_features, save_path+f"/Data - Validation Features PCA {validation_low} {validation_high}.joblib")
     dump(test_pca_features, save_path+"/Data - Test Features PCA.joblib")
 
     return train_pca_features,validation_pca_features,test_pca_features
@@ -103,7 +109,7 @@ def get_pca_reduction(train_features,validation_features,test_features,save_path
 
 def fit_and_eval_models(train_pca_features,train_target,
                         validation_pca_features,validation_target,
-                        save_path):
+                        save_path,validation_low,validation_high):
     """
     Function to fit a number of regression models,
     evaluate, and return the results. This takes a while to run.
@@ -138,22 +144,36 @@ def fit_and_eval_models(train_pca_features,train_target,
     model_results = pipeline.build_regressors(MODELS, GRID,
                                               train_pca_features, train_target,
                                               validation_pca_features, validation_target,
-                                              save_path)
+                                              save_path, validation_low, validation_high)
     return model_results
 
 
 if __name__ == "__main__":
 
-    train_features,validation_features,test_features,train_target,validation_target,test_target = build_and_split_master_df("../output/data")
-    train_pca_features,validation_pca_features,test_pca_features = get_pca_reduction(train_features,
-                                                                                        validation_features,
-                                                                                        test_features,
-                                                                                        "../output/data")
-    model_results = fit_and_eval_models(train_pca_features,train_target,
-                                        validation_pca_features,validation_target,
-                                        "../output/models_predictions_pca")
-    
-    # Sort and save results
-    model_results = model_results.sort_values('MAE')
-    model_results.to_csv("../output/model_validation_results_with_pca.csv", index=False)
+    # Do cross-validation
+    full_results = pd.DataFrame()
+    raw = get_master_df()
+    for val_cutoffs in [(0.6,0.7),(0.7,0.8),(0.8,0.9)]:
+        train_features,validation_features,test_features,train_target,validation_target,test_target = split_master_df(raw, "../output/data",
+                                                                                                                      val_cutoffs[0], 
+                                                                                                                      val_cutoffs[1])
+        train_pca_features,validation_pca_features,test_pca_features = get_pca_reduction(train_features,
+                                                                                         validation_features,
+                                                                                         test_features,
+                                                                                         "../output/data",
+                                                                                         val_cutoffs[0], val_cutoffs[1])
+        model_results = fit_and_eval_models(train_pca_features,train_target,
+                                            validation_pca_features,validation_target,
+                                            "../output/models_predictions_pca",
+                                            val_cutoffs[0], val_cutoffs[1])
+        full_results = pd.concat((full_results,model_results), axis=0)
 
+    # Sort and save results
+    full_results = full_results.sort_values('MAE')
+    full_results.to_csv("../output/model_validation_results_with_pca_all_validations.csv", index=False)
+
+    # Get average results
+    full_results['Parameters'] = full_results['Parameters'].astype(str)
+    full_results = full_results.groupby(by=['Model','Parameters']).mean().reset_index()
+    full_results = full_results.sort_values('MAE')
+    full_results.to_csv("../output/model_validation_results_with_pca_average.csv", index=False)
