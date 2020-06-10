@@ -175,3 +175,7 @@ def mae_bar():
 	plt.title('Mean Absolute Error for Best Models by Type', fontsize=18)
 	plt.legend(fontsize=20)
 	plt.savefig('../output/plot/MAEs/mae_bar.png')
+
+
+
+	
