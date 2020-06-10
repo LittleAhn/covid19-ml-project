@@ -8,6 +8,11 @@ RAW = join(ROOT, 'data_raw')
 
 
 def main():
+	"""
+	executes steps to make intermediate data CSV for MIT election data
+	there must be a file in the data_raw folder titled 'countypres_2000-2016.csv'
+	includes calculating vote share from columns
+	"""
 
 	votes = pd.read_csv(join(RAW, 'countypres_2000-2016.csv'))
 	votes = votes.loc[(votes['year'] == 2016) & votes['party'].notnull(), (

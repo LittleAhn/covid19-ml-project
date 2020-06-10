@@ -9,6 +9,10 @@ INT = join(ROOT, 'data_intermediate')
 
 
 def execute():
+	"""
+	runs steps to create intermediate data files for cdc health data
+	many of the steps resolves unusual geographic levels of the data
+	"""
 
 	healthdf_msa = get_cbsa_level()	
 	healthdf_st = get_state_level()
@@ -19,10 +23,8 @@ def execute():
 	metrodiv_fips_crosswalk = get_metro_division()
 	cbsa_fips_crosswalk.to_csv(join(INT, 'cbsa_fips.csv'), index=False)
 	metrodiv_fips_crosswalk.to_csv(join(INT, 'metrodiv_fips.csv'), index=False)
-	# fips = get_fips_crosswalk()
 
 	health_fips = merge_crosswalks(healthdf_msa, cbsa_fips_crosswalk, metrodiv_fips_crosswalk)
-	# health_fips = merge_health_dfs(healthdf_fips, healthdf_st)
 	health_fips.to_csv(join(INT, 'health_fips.csv'), index=False)
 
 

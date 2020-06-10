@@ -4,6 +4,9 @@ import geopandas as gpd
 
 
 def main():
+	"""
+	executes steps to create intermediate csvs for noaa data
+	"""
 
 	print('reading...')
 	df = read_temps()
@@ -31,10 +34,6 @@ def main():
 	for c in ['TMAX', 'TMIN']:
 		df.loc[:,c] = df[c].apply(lambda x: (x/10) * (9/5) + 32)
 
-	# print('merging on areas..')
-	# counties = read_shape()
-	# df = df.merge(counties[['fips', 'area']], how='left', on='fips')
-
 	print('interpolate...')
 	for c in ['TMAX', 'TMIN', 'PRCP']:
 		vals = df.groupby(['state', 'date'])[c].transform(np.mean)
@@ -43,19 +42,16 @@ def main():
 	print('creating features...')
 	df = create_features(df)
 
-	# return df
-
-	# df.drop('interpolate_value', axis=1, inplace=True, errors='raise')
-
 	df.to_csv('../data_intermediate/noaa.csv')
 
-
-
-	# df.to_csv('../data_intermediate/weather.csv', index=False)
 	return df
 
 
 def create_features(df):
+	"""
+	creates rolling average features for min and max temp
+	as well as a dummpy for precipitation
+	"""
 
 	df['precip_dummy'] = 0
 	df.loc[df['PRCP'] > .05, 'precip_dummy'] = 1 ### arbitrary cutoff
@@ -72,6 +68,9 @@ def create_features(df):
 
 
 def merge_counties(df):
+	"""
+	merges county fips onto whether stations
+	"""
 
 	counties = read_shape()
 	counties = counties[['GEOID', 'geometry']]
@@ -81,6 +80,10 @@ def merge_counties(df):
 
 
 def filter_and_reshape(df):
+	"""
+	basic filtering based on date and widens data so temps and prcp
+	are on different rows
+	"""
 
 	df = df[['id', 'date', 'var', 'value']]
 	df = df[df['date'] >= '2020-02-15']
@@ -94,6 +97,9 @@ def filter_and_reshape(df):
 
 
 def read_temps():
+	"""
+	reads and returns weather data for 2020
+	"""
 
 	df = pd.read_csv('../data_raw/2020.csv', header=None)
 	df.columns = (['id', 'date', 'var', 'value',
@@ -102,6 +108,9 @@ def read_temps():
 
 
 def read_stations():
+	"""
+	reads data for weather station locations
+	"""
 
 	with open('../data_raw/ghcnd-stations.txt', 'r') as f:
 		lines = f.readlines()
@@ -127,9 +136,11 @@ def read_stations():
 
 
 def read_shape():
+	"""
+	loads county shape file
+	"""
 
 	geodf = gpd.read_file('../data_raw/tl_2017_us_county.shp')
-	# geodf['area'] = geodf.geometry.apply(lambda x: x.area)
 	geodf['fips'] = geodf['STATEFP'] + geodf['COUNTYFP']
 	return geodf
 
