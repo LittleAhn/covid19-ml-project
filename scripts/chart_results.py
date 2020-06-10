@@ -67,7 +67,7 @@ def load_df(target, df_type='Validation', pca=False):
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
 	df = df[['fips', 'date'] + target]
 	names = {c: 'observed_' + c for c in target}
-	df.rename(names, axis=1, inplace=True, errors='raise')
+	df.rename(names, axis=1, inplace=True)
 
 	return df
 
@@ -98,7 +98,7 @@ def load_predictions(folder, model_list, target):
 	for t in target:
 		names = {c: '_'.join([c, t]) for c in predictions}
 
-	df.rename(names, axis=1, inplace=True, errors='raise')
+	df.rename(names, axis=1, inplace=True)
 
 	return df
 
