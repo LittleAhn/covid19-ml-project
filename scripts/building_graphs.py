@@ -9,6 +9,10 @@ warnings.filterwarnings('ignore')
 
 
 def graphs_main():
+	"""
+	calls all the plots functions and save the output plots into .png files in output folder in the directory.
+	"""
+
 	df = load()
 	gmae = mae_merged()
 	bar = bars(df)
@@ -23,12 +27,24 @@ def graphs_main():
 
 
 def load():
+	"""
+	loads the full cleaned dataset
+	returns:
+		the final full dataframe
+	"""
+
 	# df = build_master_df.build_df()
 	df = pd.read_csv('../../../../archived/full_df.csv')
 	return df
 
 
 def shapes():
+	"""
+	loads a shape file with counties and geo information
+	returns:
+		a geopandas shape file
+	"""
+
 	shape = gpd.read_file('../../../../archived/tl_2017_us_county/tl_2017_us_county.shp')
 	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
 	shape.NAMELSAD = shape.NAMELSAD.str.upper()
@@ -36,6 +52,13 @@ def shapes():
 
 
 def bars(df):
+	"""
+	plots bar charts for missing data on mobility target variables, and save save the output 
+	plots into .png files in output folder in the directory.
+	inputs:
+		df: full dataframe
+	"""
+
 	sns.set(rc={'figure.figsize':(12, 5)})
 	Missing_by_Target = df[[c for c in df.columns if c.endswith('baseline')]].isnull().sum() / df.shape[0] * 100
 	Missing_by_Target.index = ['Retail & Recreation', 'Grocery & Parmacy', 'Parks', 'Transit', 'Workplace', 'Residential']
@@ -48,6 +71,13 @@ def bars(df):
 
 
 def lines(df):
+	"""
+	plots line charts for missing data over time, and save save the output 
+	plots into .png files in output folder in the directory.
+	inputs:
+		df: full dataframe
+	"""
+
 	fig, ax = plt.subplots()
 	df1 = df[df['retail_and_recreation_percent_change_from_baseline'].isnull()].groupby('date')['fips'].count()/ df.groupby('date')['fips'].count() * 100
 	df1.plot(linewidth=0.8, label='Retail & Recreation')
@@ -70,6 +100,13 @@ def lines(df):
 
 
 def matrixs(df):
+	"""
+	plots matrix pairchart to compare coorelations between typical features, and save save the output 
+	plots into .png files in output folder in the directory.
+	inputs:
+		df: full dataframe
+	"""
+
 	df_matrix = df.dropna()
 	df_matrix = df_matrix[['TMAX', 'pop_density', 'in_school_pct', 'cases_per_pop', 'voteshare_dem', 'has_broadband_pct', 'med_inc']]
 	df_matrix.columns = ['Max Temperature', 'Population Density', 'In School Percentage', 'Cases Per Population',
@@ -81,6 +118,13 @@ def matrixs(df):
 
 
 def map(df):
+	"""
+	plots map for missing data over each county, and save save the output 
+	map into .png files in output folder in the directory.
+	inputs:
+		df: full dataframe
+	"""
+
 	shape = shapes()
 	df = df[df.iloc[:, 3:9].isnull().any(axis=1)]
 	df = df.groupby('CountyName').count()
@@ -101,6 +145,13 @@ def map(df):
 
 
 def counties_lines(df):
+	"""
+	plots line charts over time for all mobility target variabls and max temporature in three different 
+	counties, and save save the output plots into .png files in output folder in the directory.
+	inputs:
+		df: full dataframe
+	"""
+
 	df_line = df[['date', 'fips', 'retail_and_recreation_percent_change_from_baseline',
     'grocery_and_pharmacy_percent_change_from_baseline', 'parks_percent_change_from_baseline',
     'transit_stations_percent_change_from_baseline', 'workplaces_percent_change_from_baseline',
@@ -166,11 +217,15 @@ def counties_lines(df):
 	plt.ylabel("Percentage on Mobility Change", fontsize=13)
 	plt.title('Mobility Change in Parks, Max Temperatur in Cook County', fontsize=18)
 	plt.savefig('../output/plot/data_exploration/park_tmax_line.png')
-
 	return
 
 
 def mae_bar():
+	"""
+	plots bar charts to compare MAEs between the best models with PCA and without PCA, and save save the output 
+	plots into .png files in output folder in the directory.
+	"""
+
 	fig, ax = plt.subplots()
 	with_pca = pd.read_csv('../output/model_validation_results_with_pca.csv')
 	without_pca = pd.read_csv('../output/model_validation_results_without_pca.csv')
@@ -188,6 +243,12 @@ def mae_bar():
 
 
 def mae_merged():
+	"""
+	creates and merges the final mae results
+	returns:
+		two geopandas dataframes, one for the best models' MAEs with PCA and one for the best mobels' MAEs without PCA.
+	"""
+
 	mae = chart_results.create_county_MAE()
 	mae_pca = mae[0]
 	mae_nopca = mae[1]
@@ -203,6 +264,13 @@ def mae_merged():
 
 
 def mae_map_pca(gmae):
+	"""
+	plots map for the lowest MAEs with PCA in counties, and save save the output 
+	plots into .png files in output folder in the directory.
+	inputs:
+		gmae: a geopandas dataframe of PCA maes for different counties
+	"""
+
 	fig, ax = plt.subplots(1, figsize=(25, 10))
 	gmae.plot(column='MAE', cmap='Blues', ax=ax, edgecolor='0.8')
 	ax.set_title('Mean Absolute Error / Predictions by County - PCA', fontsize=25)
@@ -216,6 +284,13 @@ def mae_map_pca(gmae):
 
 
 def mae_map_nopca(gmae):
+	"""
+	plots map for the lowest MAEs without PCA in counties, and save save the output 
+	plots into .png files in output folder in the directory.
+	inputs:
+		gmae: a geopandas dataframe of none PCA maes for different counties
+	"""
+	
 	fig, ax = plt.subplots(1, figsize=(25, 10))
 	gmae.plot(column='MAE', cmap='Greens', ax=ax, edgecolor='0.8')
 	ax.set_title('Mean Absolute Error on Retail & Recreation Predictions by County - No PCA', fontsize=25)
