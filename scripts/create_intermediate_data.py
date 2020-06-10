@@ -31,7 +31,7 @@ def populate_intermediate_data():
 
 	### CDC cases and deaths
 	print("pulling CDC cases and deaths...")
-	load_cd_CDC.main()
+	load_cl_CDC.main()
 
 	### CDC health characteristics
 	print("pulling CDC health data...")
@@ -45,13 +45,6 @@ def populate_intermediate_data():
 	print("pulling interventions...")
 	load_interventions.execute()
 
-
-# def check_raw_file_exists(fn):
-# 	"""
-# 	checks if raw file exists in data_raw folder
-# 	"""
-
-# 	return False
 
 if __name__ == '__main__':
 
