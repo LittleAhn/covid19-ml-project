@@ -1,5 +1,4 @@
 import pandas as pd
-import requests as re
 import numpy as np
 from os.path import join, abspath, dirname, exists
 import utils
@@ -12,6 +11,9 @@ INT = join(ROOT, 'data_intermediate')
 
 
 def read_CDC():
+	"""
+	reads and returns dfs for cdc cases and deaths
+	"""
 
 	cases = pd.read_csv(join(RAW, 'cdc_covid_confirmed_usafacts.csv'))
 	deaths = pd.read_csv(join(RAW, 'cdc_covid_deaths_usafacts.csv'))
@@ -20,6 +22,11 @@ def read_CDC():
 
 
 def cl(df, val_name):
+	"""
+	transforms df to long format with rows identified by date-county
+	df: dataframe with counties as rows and dates as columns
+	val_name: string of variable name being transposed
+	"""
 
 	df = df[df['countyFIPS'] != 0]
 	df.drop(['County Name', 'State', 'stateFIPS'], axis=1, inplace=True)
@@ -29,6 +36,9 @@ def cl(df, val_name):
 
 
 def main():
+	"""
+	executes steps to create intermediate cd deaths and cases csvs
+	"""
 
 	cases, deaths = read_CDC()
 	cases = cl(cases, 'cases')
@@ -36,7 +46,7 @@ def main():
 
 	### create features
 	for df, var in zip((cases, deaths), ('cases', 'deaths')):
-		
+
 		for window in [3, 7]:
 			df['{}_{}d_avg'.format(var, window)] = df.groupby('countyFIPS')[var].transform(
 				lambda x: x.rolling(window, 1).mean())

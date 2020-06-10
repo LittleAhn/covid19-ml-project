@@ -118,12 +118,8 @@ def acs_feature_creating(df):
 	for c in income_cols:
 		df[c] = df[c] / df['S1101_C01_001E']
 
-	### grandparents
-	# df['grandparents_with_children_pct'] = df['S1002_C01_001E'] / df['S1101_C01_001E']
-
 	### food stamps
 	df['food_stamps_pct'] = df['S2201_C03_001E'] / df['S1101_C01_001E']
-	# df.drop('S2201_C03_001E', axis=1, inplace=True)
 
 	df.drop(['S0801_C01_001E', 'S1101_C01_010E',
 		'S1101_C01_011E', 'S1101_C01_019E', 
@@ -134,6 +130,9 @@ def acs_feature_creating(df):
 
 
 def rename_acs_cols(df):
+	"""
+	renames select columsn in acs dataframe based on 'rename_ACS_vars.txt'
+	"""
 
 	### grab acs columns
 	with open(join(RAW, 'rename_ACS_vars.txt'), 'r') as f:
@@ -209,6 +208,12 @@ def clean_NAICS(df):
 
 
 def merge_on_totals(df, level):
+	"""
+	merges total number of workers by industry
+	inputs:
+		df: dataframe of NAICS data generated from pull_data and clean NAICS
+		level:  digits of NAICS code at which we want to aggregate
+	"""
 
 	totals = df.loc[df['Industry']=='00', ['fips', 'EMP']]
 	secs = df[df['Industry'].str.len()==level]
@@ -223,12 +228,17 @@ def merge_on_totals(df, level):
 
 
 def reshape(df):
+	"""
+	reshapes dataframe such that there are columns for each industry
+	"""
 	return df.pivot(index='fips', columns='Industry_Label',
 			values='emp_pct').reset_index()
 
 
 def rename_naics(df):
-
+	"""
+	renames columns
+	"""
 	new_names = {c: "NAICS_" + c for c in df.columns if c not in ('fips', 'state')}
 	df.rename(new_names, axis=1, inplace=True, errors='raise')
 	return df
@@ -236,6 +246,9 @@ def rename_naics(df):
 
 
 def execute_NAICS():
+	"""
+	executes steps to make NAICS intermediate data 
+	"""
 
 	df = pull_data(NAICS_ENDPOINT)
 	df = clean_NAICS(df)

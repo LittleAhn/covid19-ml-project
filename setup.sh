@@ -8,6 +8,55 @@
 
 
 
+
+# 1. First check to see if the correct version of Python is installed on the local machine 
+echo "Checking Python version..."
+REQ_PYTHON_V="360"
+
+ACTUAL_PYTHON_V=$(python -c 'import sys; version=sys.version_info[:3]; print("{0}{1}{2}".format(*version))')
+ACTUAL_PYTHON3_V=$(python3 -c 'import sys; version=sys.version_info[:3]; print("{0}{1}{2}".format(*version))')
+
+if [[ $ACTUAL_PYTHON_V > $REQ_PYTHON_V ]] || [[ $ACTUAL_PYTHON_V == $REQ_PYTHON_V ]];  then 
+    PYTHON="python"
+elif [[ $ACTUAL_PYTHON3_V > $REQ_PYTHON_V ]] || [[ $ACTUAL_PYTHON3_V == $REQ_PYTHON_V ]]; then 
+    PYTHON="python3"
+else
+    echo -e "\tPython 3.7 is not installed on this machine. Please install Python 3.7 before continuing."
+    exit 1
+fi
+
+echo -e "\t--Python 3.7 is installed"
+
+# 2. Create Virtual environment 
+
+# Remove the env directory if it exists 
+if [[ -d env ]]; then 
+    rm -r env  
+fi
+
+echo -e "Creating virtual environment..."
+$PYTHON -m venv env 
+if [[ ! -d env ]]; then 
+    echo -e "\t--Could not create virutal environment... Please make sure venv is installed"
+    exit 1
+fi
+
+# 3. Install requirements 
+
+echo -e "Installing Requirements"
+if [[ ! -e "requirements.txt" ]]; then 
+    echo -e "\t--Need requirements.txt to install packages."
+    exit 1
+fi
+
+source env/bin/activate
+pip install -r requirements.txt || run_extra_installs
+
+deactivate 
+
+
+########## setting up folders ##############33
+
 echo "To unzip the files we first have to check that you have zip and unzip installed"
 echo "Can you give us permission to install zip and unzip if they're not found? [Y|n]"
 
@@ -31,97 +80,42 @@ for pkg in zip unzip; do
 	  sudo apt-get --yes install $pkg 
 	fi
 done;
-echo
-echo "Unzipping files data_raw..."
-unzip data_raw/data -d data_raw/ -o
-unzip data_raw/noaa -d data_raw/ -o
-unzip data_raw/shape -d data_raw/ -o
-
-echo
-echo "Unzipping files data_intermediate"
-unzip data_intermediate/data_intermediate -d data_intermediate/ -o
 
 
+# echo
+# echo "Unzipping files data_raw..."
+# unzip data_raw/data -d data_raw/ -o
+# unzip data_raw/noaa -d data_raw/ -o
+# unzip data_raw/shape -d data_raw/ -o
 
-# fi
+# echo
+# echo "Unzipping files data_intermediate"
+# unzip data_intermediate/data_intermediate -d data_intermediate/ -o
 
-
-
-# # 1. First check to see if the correct version of Python is installed on the local machine 
-# echo "Checking Python version..."
-# REQ_PYTHON_V="370"
-
-
-
-
-# ACTUAL_PYTHON_V=$(python -c 'import sys; version=sys.version_info[:3]; print("{0}{1}{2}".format(*version))')
-# ACTUAL_PYTHON3_V=$(python3 -c 'import sys; version=sys.version_info[:3]; print("{0}{1}{2}".format(*version))')
-
-# run_extra_installs() {
-
-# m="Pip installation of requirements failed.\nWould you like us to run apt-get commmands that resolved the issue on our machine? [Y|n]"
-
-# while [[ "$resp" != "Y" && "$resp" != "n" ]]; do
-
-# 	echo -e $m
-# 	read resp
-# 	echo
-  
-# done
-
-# if [[ "$resp" == "Y" ]]; then
-
-# 	sudo apt-get update
-# 	sudo apt install udo
-# 	sudo apt-get install libspatialindex-dev
-# 	sudo apt-get install -y python-rtree
-
-# 	exit 1
-
-
-
-# }
-
-
-
-# if [[ $ACTUAL_PYTHON_V > $REQ_PYTHON_V ]] || [[ $ACTUAL_PYTHON_V == $REQ_PYTHON_V ]];  then 
-#     PYTHON="python"
-# elif [[ $ACTUAL_PYTHON3_V > $REQ_PYTHON_V ]] || [[ $ACTUAL_PYTHON3_V == $REQ_PYTHON_V ]]; then 
-#     PYTHON="python3"
-# else
-#     echo -e "\tPython 3.7 is not installed on this machine. Please install Python 3.7 before continuing."
-#     exit 1
-# fi
-
-# echo -e "\t--Python 3.7 is installed"
-
-# # 2. Create Virtual environment 
-
-# # Remove the env directory if it exists 
-# if [[ -d env ]]; then 
-#     rm -r env  
-# fi
-
-# echo -e "Creating virtual environment..."
-# $PYTHON -m venv env 
-# if [[ ! -d env ]]; then 
-#     echo -e "\t--Could not create virutal environment... Please make sure venv is installed"
-#     exit 1
-# fi
-
-# # 3. Install requirements 
-
-# echo -e "Installing Requirements"
-# if [[ ! -e "requirements.txt" ]]; then 
-#     echo -e "\t--Need requirements.txt to install packages."
-#     exit 1
-# fi
-
-
-
-# source env/bin/activate
-# pip install -r requirements.txt || run_extra_installs
-
-
-# deactivate 
 # echo -e "Done."
+
+
+run_extra_installs() {
+
+m="Pip installation of requirements failed.\nWould you like us to run apt-get commmands that resolved the issue on our machine? [Y|n]"
+
+while [[ "$resp" != "Y" && "$resp" != "n" ]]; do
+
+	echo -e $m
+	read resp
+	echo
+  
+done
+
+if [[ "$resp" == "Y" ]]; then
+
+	sudo apt-get update
+	sudo apt install udo
+	sudo apt-get install libspatialindex-dev
+	sudo apt-get install -y python-rtree
+fi
+
+pip install -r requirements.txt
+
+	exit 1
+}
