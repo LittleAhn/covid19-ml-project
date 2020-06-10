@@ -7,13 +7,17 @@ import warnings
 import chart_results
 warnings.filterwarnings('ignore')
 
+
 def graphs_main():
 	df = load()
+	gmae = mae_merged()
 	bar = bars(df)
 	line = lines(df)
 	matrix = matrixs(df)
 	counties_line = counties_lines(df)
 	mae = mae_bar()
+	map_pca = mae_map_pca(gmae[0])
+	map_nopca = mae_map_nopca(gmae[1])
 	maps = map(df)
 	return
 
@@ -22,6 +26,13 @@ def load():
 	# df = build_master_df.build_df()
 	df = pd.read_csv('../../../../archived/full_df.csv')
 	return df
+
+
+def shapes():
+	shape = gpd.read_file('../../../../archived/tl_2017_us_county/tl_2017_us_county.shp')
+	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
+	shape.NAMELSAD = shape.NAMELSAD.str.upper()
+	return shape
 
 
 def bars(df):
@@ -70,9 +81,7 @@ def matrixs(df):
 
 
 def map(df):
-	shape = gpd.read_file('../../../../archived/tl_2017_us_county/tl_2017_us_county.shp')
-	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
-	shape.NAMELSAD = shape.NAMELSAD.str.upper()
+	shape = shapes()
 	df = df[df.iloc[:, 3:9].isnull().any(axis=1)]
 	df = df.groupby('CountyName').count()
 	df = df.merge(shape, left_on=['CountyName'], right_on='NAMELSAD', how="right")
@@ -178,6 +187,43 @@ def mae_bar():
 	plt.savefig('../output/plot/MAEs/mae_bar.png')
 
 
-def mae_map():
+def mae_merged():
 	mae = chart_results.create_county_MAE()
+	mae_pca = mae[0]
+	mae_nopca = mae[1]
+	shape = shapes()
+	mae_pca_merged = mae_pca.merge(shape, left_on='fips', right_on='GEOID', how="right")
+	mae_pca_merged = mae_pca_merged.fillna(mae_pca_merged.mean())
+	gmae_pca = gpd.GeoDataFrame(mae_pca_merged, geometry=mae_pca_merged.geometry)
+	mae_nopca_merged = mae_nopca.merge(shape, left_on='fips', right_on='GEOID', how="right")
+	mae_nopca_merged = mae_nopca_merged.fillna(mae_nopca_merged.mean())
+	gmae_nopca = gpd.GeoDataFrame(mae_nopca_merged, geometry=mae_nopca_merged.geometry)
+
+	return gmae_pca, gmae_nopca
+
+
+def mae_map_pca(gmae):
+	fig, ax = plt.subplots(1, figsize=(25, 10))
+	gmae.plot(column='MAE', cmap='Blues', ax=ax, edgecolor='0.8')
+	ax.set_title('Mean Absolute Error / Predictions by County - PCA', fontsize=25)
+	sm = plt.cm.ScalarMappable(cmap='Blues', norm=plt.Normalize(vmin=0, vmax=22))
+	sm._A = []
+	cbar = fig.colorbar(sm)
+	ax.axis((-130, -60, 20, 50))
+	plt.xlabel('Longitude', fontsize=15)
+	plt.ylabel('Latitude', fontsize=15)
+	plt.savefig('../output/plot/MAEs/mae_map_pca.png')
+
+
+def mae_map_nopca(gmae):
+	fig, ax = plt.subplots(1, figsize=(25, 10))
+	gmae.plot(column='MAE', cmap='Greens', ax=ax, edgecolor='0.8')
+	ax.set_title('Mean Absolute Error on Retail & Recreation Predictions by County - No PCA', fontsize=25)
+	sm = plt.cm.ScalarMappable(cmap='Greens', norm=plt.Normalize(vmin=0, vmax=22))
+	sm._A = []
+	cbar = fig.colorbar(sm)
+	ax.axis((-130, -60, 20, 50))
+	plt.xlabel('Longitude', fontsize=15)
+	plt.ylabel('Latitude', fontsize=15)
+	plt.savefig('../output/plot/MAEs/mae_map_nopca.png')
 

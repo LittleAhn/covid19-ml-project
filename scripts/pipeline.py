@@ -49,7 +49,8 @@ def get_numeric_histograms(df, nbins=40, log=False):
         raise TypeError("df must be a pandas DataFrame object")
 
 
-def get_train_test(df, train_size=0.8, random_state=1, time_series=False, validation=False):
+def get_train_test(df, test_size=0.1, random_state=1, time_series=False, 
+                   validation=False, validation_low=0.8, validation_high=0.9):
     '''
     Calls sklearn's train_test_split on an input df and returns 
     the resulting train and test set DataFrames. Takes in parameters
@@ -62,21 +63,24 @@ def get_train_test(df, train_size=0.8, random_state=1, time_series=False, valida
 
         # Non-time series split
         if not time_series:
-            train, test = train_test_split(df, train_size=train_size, 
-                                            test_size=1-train_size, 
-                                            random_state=random_state)
+            train, test = train_test_split(df, train_size=1-test_size, 
+                                           test_size=test_size, 
+                                           random_state=random_state)
             return (train, test)
         elif time_series:
             df.loc[:,'date'] = df['date'].astype('datetime64')
-            traincutoff = df['date'].astype('datetime64').quantile(train_size)
-            train = df[df['date'] <= traincutoff]
             if not validation:
-                test  = df[df['date'] >  traincutoff]
+                testcutoff = df['date'].quantile(1-test_size)
+                train = df[df['date'] <= testcutoff]
+                test  = df[df['date'] > testcutoff]
                 return (train, test)
             elif validation:
-                validationcutoff = df['date'].astype('datetime64').quantile(train_size+(1-train_size)/2.)
-                validation = df[(df['date'] >  traincutoff) & (df['date'] <= validationcutoff)]
-                test  = df[df['date'] > validationcutoff]
+                validationlow = df['date'].quantile(validation_low)
+                validationhigh = df['date'].quantile(validation_high)
+                testcutoff = df['date'].quantile(1-test_size)
+                train = df[df['date'] <= validationlow]
+                validation = df[(df['date'] > validationlow) & (df['date'] <= validationhigh)]
+                test  = df[df['date'] > testcutoff]
                 return (train, validation, test)
                     
     else: 
@@ -200,7 +204,7 @@ def normalize_vars(train, test, validation=None, verbose=False):
 def build_regressors(models, params_grid, 
                       train_features, train_outcome, 
                       test_features, test_outcome,
-                      save_path):
+                      save_path, validation_low, validation_high):
     '''
     Trains a number of models and returns a DataFrame 
     of these models and their resulting evaluation metrics.
@@ -238,8 +242,8 @@ def build_regressors(models, params_grid,
             test_pred = model.predict(test_features)
 
             # Save results
-            dump(model, save_path+f"/{model_key} - Model {idx}.joblib")
-            dump(test_pred, save_path+f"/{model_key} - Predictions {idx}.joblib")
+            dump(model, save_path+f"/{model_key} - Model {idx} - {validation_low} {validation_high}.joblib")
+            dump(test_pred, save_path+f"/{model_key} - Predictions {idx} - {validation_low} {validation_high}.joblib")
 
             # Finish timing
             endmodel = datetime.datetime.now()
