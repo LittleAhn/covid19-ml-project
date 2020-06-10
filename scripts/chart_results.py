@@ -264,7 +264,7 @@ def execute_plots(targets, fips_list):
 	model_list = {True: pca_mods, False: nopca_mods}
 
 	null_model = load_training_county_mean(targets)
-	outpath = join(OUTPUT, 'plot')
+	outpath = join(OUTPUT, 'plot', 'results')
 
 	training_means = load_training_county_mean(targets)
 
@@ -323,7 +323,7 @@ def mae_bar():
 	plt.xlabel("Best Models", fontsize=13)
 	plt.title('Mean Absolute Error for Best Models by Type', fontsize=18)
 	plt.legend(fontsize=20)
-	plt.savefig('../output/plot/MAEs/mae_bar.png')
+	plt.savefig('../output/plot/results/mae_bar.png')
 
 
 
