@@ -19,7 +19,7 @@ def graphs_main():
 
 def load():
 	# df = build_master_df.build_df()
-	df = pd.read_csv('full_df.csv')
+	df = pd.read_csv('../../../../archived/full_df.csv')
 	return df
 
 
@@ -31,7 +31,7 @@ def bars(df):
 	ax = sns.barplot(x=Missing_by_Target.index, y='Percentage', data=Missing_by_Target)
 	plt.xlabel("Mobility - Change from Baseline")
 	plt.title('Missing Data by Target Variable', fontsize=20)
-	plt.savefig('../output/graphs/missing_data/bar.png')
+	plt.savefig('../output/plot/missing_data/bar.png')
 	return
 
 
@@ -53,7 +53,7 @@ def lines(df):
 	plt.xlabel("Dates")
 	plt.ylabel("Percentage on Mobility Change")
 	plt.title('Missing Data by Mobility Category - Change from Baseline', fontsize=20)
-	plt.savefig('../output/graphs/missing_data/line.png')
+	plt.savefig('../output/plot/missing_data/line.png')
 	return
 
 
@@ -64,12 +64,12 @@ def matrixs(df):
                      'Democratic Vote Share', 'Has Broadband Percentage', 'Median Inccome']
 	sns.set(style="ticks", color_codes=True, font_scale=1.15)
 	ax = sns.pairplot(df_matrix, vars=df_matrix.columns)
-	ax.savefig('../output/graphs/matrix_predictions_counties/matrix.png')
+	ax.savefig('../output/plot/data_exploration/matrix.png')
 	return
 
 
 def map(df):
-	shape = gpd.read_file('../data_raw/tl_2017_us_county/tl_2017_us_county.shp')
+	shape = gpd.read_file('../../../../archived/tl_2017_us_county/tl_2017_us_county.shp')
 	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
 	shape.NAMELSAD = shape.NAMELSAD.str.upper()
 	df = df[df.iloc[:, 3:9].isnull().any(axis=1)]
@@ -86,7 +86,7 @@ def map(df):
 	ax.axis((-130, -60, 20, 50))
 	plt.xlabel('Longitude', fontsize=15)
 	plt.ylabel('Latitude', fontsize=15)
-	plt.savefig('../output/graphs/missing_data/map.png')
+	plt.savefig('../output/plot/missing_data/map.png')
 	return
 
 
@@ -114,7 +114,7 @@ def counties_lines(df):
 	plt.xlabel("Dates", fontsize=13)
 	plt.ylabel("Percentage on Mobility Change", fontsize=13)
 	plt.title('Mobility Change, Max Temperature and Deaths per Population in Orange County', fontsize=18)
-	plt.savefig('../output/graphs/matrix_predictions_counties/orange_line.png')
+	plt.savefig('../output/plot/data_exploration/orange_line.png')
 
 	df_brooklyn = df_line[df_line['fips'] == 36047]
 	df_brooklyn = df_brooklyn[["Retail and Recreation", "Grocery and Pharmacy", "Parks",
@@ -130,7 +130,7 @@ def counties_lines(df):
 	plt.xlabel("Dates", fontsize=13)
 	plt.ylabel("Percentage on Mobility Change", fontsize=13)
 	plt.title('Mobility Change, Max Temperature and Deaths per Population in Brooklyn County', fontsize=18)
-	plt.savefig('../output/graphs/matrix_predictions_counties/brooklyn_line.png')
+	plt.savefig('../output/plot/data_exploration/brooklyn_line.png')
 
 	df_cook = df_line[df_line['fips'] == 17031]
 	df_cook = df_cook[["Retail and Recreation", "Grocery and Pharmacy", "Parks",
@@ -146,7 +146,7 @@ def counties_lines(df):
 	plt.xlabel("Dates", fontsize=13)
 	plt.ylabel("Percentage on Mobility Change", fontsize=13)
 	plt.title('Mobility Change, Max Temperature and Deaths per Population in Cook County', fontsize=18)
-	plt.savefig('../output/graphs/matrix_predictions_counties/cook_line.png')
+	plt.savefig('../output/plot/data_exploration/cook_line.png')
 
 	fig, ax = plt.subplots()
 	df_cook_parks = df_cook[["Parks", "Max Temperature"]]
@@ -155,7 +155,7 @@ def counties_lines(df):
 	plt.xlabel("Dates", fontsize=13)
 	plt.ylabel("Percentage on Mobility Change", fontsize=13)
 	plt.title('Mobility Change in Parks, Max Temperatur in Cook County', fontsize=18)
-	plt.savefig('../output/graphs/matrix_predictions_counties/park_tmax_line.png')
+	plt.savefig('../output/plot/data_exploration/park_tmax_line.png')
 
 	return
 
@@ -174,4 +174,8 @@ def mae_bar():
 	plt.xlabel("Best Models", fontsize=13)
 	plt.title('Mean Absolute Error for Best Models by Type', fontsize=18)
 	plt.legend(fontsize=20)
-	plt.savefig('../output/graphs/MAEs/mae_bar.png')
+	plt.savefig('../output/plot/MAEs/mae_bar.png')
+
+
+
+	
