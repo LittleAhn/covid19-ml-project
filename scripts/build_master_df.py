@@ -69,7 +69,7 @@ def build_df():
 	print('Reading interventions data...')
 	interventions = read_file.read_interventions()
 	df = df.merge(interventions, on='fips', how='left')
-	df.drop(['STATE', 'AREA_NAME', 'StateFIPS'], axis=1, inplace=True, errors='raise')
+	df.drop(['STATE', 'AREA_NAME', 'StateFIPS','log_cases','log_deaths'], axis=1, inplace=True, errors='raise')
 	print('\tTransforming intervention columns...')
 	for c in df.columns:
 		if c.startswith("int_date_"):
