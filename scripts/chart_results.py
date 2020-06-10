@@ -213,6 +213,9 @@ def plot_predictions(df, null_models, fips_list, outpath, df_type='Validation', 
 
 
 def plot_model_results(results, targets, county_means, outpath, pca=False):
+	"""
+	creates swarmplots in output/plots
+	"""
 
 
 	for t in targets:
@@ -234,19 +237,6 @@ def plot_model_results(results, targets, county_means, outpath, pca=False):
 		plt.show()
 		plt.savefig(join(outpath, t + '_MAE_by_model_' + pca_name + '.png'))
 		plt.close()
-
-
-
-# def create_all_predictions(folder):
-
-# 	predictions = {}
-
-# 	for f in listdir(join(OUTPUT, folder)):
-# 	    if 'Predictions' in f:
-# 	        preds = pd.Series(jl.load(join(OUTPUT, folder, f)))
-# 	        predictions[f[:(f.find('-')-1)]] = preds
-
-# 	predictions = pd.DataFrame(predictions)
 
 
 def execute_plots(targets, fips_list):
@@ -274,63 +264,22 @@ def execute_plots(targets, fips_list):
 
 
 
-# def plot_predictions(df, fips_list, outpath, df_type='Validation', pca=False):
-# 	"""
-# 	creates by-county line plots of all predictions in df
-# 	"""
+def create_county_MAE():
 
 
+	### first load predictions for best model
+	### replace second argument with best performing model
+	preds_pca = create_prediction_df(['retail_and_recreation_percent_change_from_baseline'],
+									 ['RandomForestRegressor - Predictions 4.joblib'], pca=True)
 
-# 	for fips in fips_list:
-# 		county = df[df['fips'] == fips].drop('fips', axis=1)
+	preds_pca = preds_pca.groupby('fips').mean()
 
-# 		for target in [c for c in df.columns if c.startswith('observed')]:
+	preds_nopca = create_prediction_df(['retail_and_recreation_percent_change_from_baseline'],
+									 ['RandomForestRegressor - Predictions 5.joblib'], pca=False)
 
-# 			for_plot = county[['date'] + [c for c in county.columns if c.endswith(target[9:])]]
-# 			# print([c for c in county.columns if c.endswith(target[9:])])
-# 			for_plot = pd.melt(for_plot, 'date', var_name='Model', value_name='Value')
+	preds_nopca = preds_nopca.groupby('fips').mean()
 
-# 			for_plot['widths'] = 1
-# 			for_plot.loc[for_plot['Model'].str.startswith('observed'), 'widths'] = 5
-
-# 			plt.clf()
-# 			fig, ax = plt.subplots()
-# 			plt.figure(figsize=(15, 10))
-# 			sns.lineplot('date', 'Value', hue='Model', size='widths', data=for_plot)
-# 			# for_plot[target].plot(linewidth=3)
-# 			plt.title(
-# 			    'Predictions and Observations for Select Models on Validation Data\nFIPS: {}\nVariable: {}'.format(
-# 			    	fips, target),
-# 			    fontsize=24)
-# 			plt.xlabel('Date', fontsize=14)
-# 			plt.ylabel('Change in Mobility From from Baseline', fontsize=14)
-
-# 			pca = 'pca' if pca else 'nopca'
-# 			name = '_'.join([target, fips, df_type, pca])
-
-# 			plt.show()
-# 			plt.savefig(join(outpath, name + '.png'))
-# 			plt.close()
-
-
-
-def load_training_data():
-	pass
-
-	
-
-
-def calc_null_scores():
-	"""
-	Calculates MAE and MSE for 
-	"""
-
-	### get training data
-
-	### calc means
-
-	### append to predictions
-
+	return preds_pca, preds_nopca
 
 
 
