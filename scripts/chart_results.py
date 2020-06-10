@@ -272,11 +272,18 @@ def create_county_MAE():
 	preds_pca = create_prediction_df(['retail_and_recreation_percent_change_from_baseline'],
 									 ['RandomForestRegressor - Predictions 4.joblib'], pca=True)
 
+	preds_pca['MAE'] = preds_pca.apply(
+		lambda x: abs(x['observed_retail_and_recreation_percent_change_from_baseline'] -
+					  x['RandomForestRegressor - Predictions_retail_and_recreation_percent_change_from_baseline']),
+		axis=1)
 	preds_pca = preds_pca.groupby('fips').mean()
 
 	preds_nopca = create_prediction_df(['retail_and_recreation_percent_change_from_baseline'],
-									 ['RandomForestRegressor - Predictions 5.joblib'], pca=False)
-
+									 ['RandomForestRegressor - Predictions 2.joblib'], pca=False)
+	preds_nopca['MAE'] = preds_nopca.apply(
+		lambda x: abs(x['observed_retail_and_recreation_percent_change_from_baseline'] -
+					  x['RandomForestRegressor - Predictions_retail_and_recreation_percent_change_from_baseline']),
+		axis=1)
 	preds_nopca = preds_nopca.groupby('fips').mean()
 
 	return preds_pca, preds_nopca
