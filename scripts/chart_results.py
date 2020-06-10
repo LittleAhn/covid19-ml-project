@@ -40,6 +40,8 @@ def load_df(target, df_type='Validation', pca=False):
 		target: list of target variables
 		df_type: string ("Valication" or "Test")
 		pca: bool - if you want to load pca or nopca files
+	returns:
+		df with fips, date, and target variables for df_type
 	"""
 
 	# print(df_type)
@@ -55,29 +57,18 @@ def load_df(target, df_type='Validation', pca=False):
 
 	feats.drop(['date', 'fips'], axis=1, inplace=True, errors='ignore')
 
-	# return feats
-
 	for df in [feats, targets]:
 		df.drop(['StateName', 'CountyName'], axis=1, inplace=True, errors='ignore')
-
-	# return feats
 
 	print('feat type', type(feats))
 	print('targets type', type(targets))
 
 	df = pd.concat([feats, targets], axis=1).reset_index().drop('index', axis=1)
-	# df = feats.merge(targets, how='left', on=['fips', 'date'])
-
-	# return df
-
-
-
 	df['fips'] = df['fips'].apply(lambda x: utils.prepend_0s(str(x), 5))
 	df = df[['fips', 'date'] + target]
 	names = {c: 'observed_' + c for c in target}
 	df.rename(names, axis=1, inplace=True, errors='raise')
 
-	# val = val_feat.merge(val_t, how='inner', ldfeft_index=True, right_index=True)
 	return df
 
 
@@ -91,6 +82,8 @@ def load_predictions(folder, model_list, target):
 	inputs:
 		model_list = [list of files in folder that correspond to model predictionss]
 		target = [list of target variables]
+	returns:
+		df of 
 	"""
 
 	print("loading predictions")
@@ -108,12 +101,19 @@ def load_predictions(folder, model_list, target):
 	df.rename(names, axis=1, inplace=True, errors='raise')
 
 	return df
-# if __name__ == '__main__':
 
-# 	print(DATA)
 
 def create_prediction_df(target, model_list, df_type='Validation', pca=False):
-
+	"""
+	returns df including target variables, date, fips and observed variables
+	inputs:
+		model_list = [list of files in folder that correspond to model predictionss]
+		target = [list of target variables]
+		pca: bool - if you want to load pca or nopca files
+		df_type: string ("Valication" or "Test")
+	returns:
+		df including target variables, date, fips and observed variables		
+	"""
 
 	assert df_type in ('Validation', 'Test'), "df_type must be Validation or Test"
 	assert isinstance(target, list), 'target must be a list of strings'
@@ -131,14 +131,17 @@ def create_prediction_df(target, model_list, df_type='Validation', pca=False):
 
 def load_training_county_mean(target):
 	"""
-	target is a list of target variables
+	returns df with fips and county means of variables in targets
+	inputs:
+		target is a list of target variables
+	return:
+		df with fips and county means of variables in targets
 	"""
 	training_df = jl.load(join(DATA, 'Data - Train Target.joblib'))
 
 	df = pd.DataFrame(training_df['fips'].unique())
 	df.columns = ['fips']
 
-	# return df
 	for t in target:
 		means = training_df.groupby('fips')[t].mean()
 		df = df.merge(means, how='left', on='fips').rename(
@@ -149,8 +152,12 @@ def load_training_county_mean(target):
 
 def calc_MAE_by_county(targets, training_means, predictions):
 	"""
-	target is a list of target variables
-	predictions: df that includes date, fips and prediction columns only
+	inputs:
+		target is a list of target variables
+		training_means: df that includes by-county target variable means
+		predictions: df that includes date, fips and prediction columns only
+	returns:
+		df of predictions and county means
 	"""
 
 	for t in targets:
@@ -158,24 +165,26 @@ def calc_MAE_by_county(targets, training_means, predictions):
 		df = predictions.merge(training_means, how='left', on='fips').rename(
 			{t: t+'_cmean'},
 			axis=1)
-		df[t + '_error'] = df.apply(lambda x: abs(x['observed_'+t] - x[t+'_cmean']), axis=1)
+		df[t + '_error'] = df.apply(
+			lambda x: abs(x['observed_'+t] - x[t+'_cmean']), axis=1)
 	
-	# return df
-
-	# cols = [t+'_error' for t in targets] + [t+'_cmean' for t in targets]
-	# df = df.groupby('fips')[[t+'_error' for t in targets]].mean().reset_index()
-
 	return df
 
 
 def plot_predictions(df, null_models, fips_list, outpath, df_type='Validation', pca=False):
 	"""
-	creates by-county line plots of all predictions in df
+	creates by-county line plots of all pred
+	inputs:
+		df: prediction dataframe from create_prediction_df to outpath
+		null_models: df from load_training_county_mean
+		fips_list: list of fips to consider
+		outpath: folder to put charts
+		pca: bool - if you want to load pca or nopca files
+		df_type: string ("Valication" or "Test")
 	"""
 
 	for fips in fips_list:
 		county = df[df['fips'] == fips].drop('fips', axis=1)
-		# print('null type', type(null))
 
 		for target in [c for c in df.columns if c.startswith('observed')]:
 			null = null_models.loc[null_models['fips']==fips, target[9:]+'_cmean'].item()
@@ -210,11 +219,15 @@ def plot_predictions(df, null_models, fips_list, outpath, df_type='Validation', 
 			name = '_'.join([target, fips, df_type, pca_title])
 
 
-
-
 def plot_model_results(results, targets, county_means, outpath, pca=False):
 	"""
 	creates swarmplots in output/plots
+	inputs:
+		results: dataframe of results by model
+		target: [list of target variables]
+		county_means: df of MAE by county
+		outpath: folder to put charts
+		pca: bool - if you want to load pca or nopca files
 	"""
 
 
@@ -240,6 +253,13 @@ def plot_model_results(results, targets, county_means, outpath, pca=False):
 
 
 def execute_plots(targets, fips_list):
+	"""
+	runs code to generate plots of results
+	inputs:
+		targets (list): variables names corresponding to target
+		fips_list (list): list of pips codes to make counties for
+	saves plots to output/plots
+	"""
 
 	model_list = {True: pca_mods, False: nopca_mods}
 
