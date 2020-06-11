@@ -33,8 +33,7 @@ def load():
 		the final full dataframe
 	"""
 
-	df = build_master_df.build_df()
-	# df = pd.read_csv('../../../../archived/full_df.csv')
+	df = pd.read_csv('../output/data/full_df.csv')
 	return df
 
 
@@ -45,7 +44,7 @@ def shapes():
 		a geopandas shape file
 	"""
 	# the shape file is in my local drive, can't uploaded, need to change the path to your workable path or link.
-	shape = gpd.read_file('../../../../archived/tl_2017_us_county/tl_2017_us_county.shp')
+	shape = gpd.read_file('../data_raw/tl_2017_us_county.shp')
 	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
 	shape.NAMELSAD = shape.NAMELSAD.str.upper()
 	return shape
@@ -132,7 +131,7 @@ def mapdf(df):
 	df = df.merge(shape, left_on=['CountyName'], right_on='NAMELSAD', how="right")
 	gdf = gpd.GeoDataFrame(df, geometry=df.geometry)
 	fig, ax = plt.subplots(1, figsize=(25, 10))
-	gdf.plot(column='fips', cmap='Reds', ax=ax, edgecolor='0.8')
+	gdf.plot(column='sharemissing', cmap='Reds', ax=ax, edgecolor='0.8')
 	ax.set_title('Percentage of Missing Mobility Data by County', fontsize=25)
 	sm = plt.cm.ScalarMappable(cmap='Reds', norm=plt.Normalize(vmin=0, vmax=100))
 	sm._A = []
@@ -304,4 +303,3 @@ def mae_map_nopca(gmae):
 	
 if __name__ == "__main__":
 	graphs_main()
-
