@@ -33,8 +33,8 @@ def load():
 		the final full dataframe
 	"""
 
-	# df = build_master_df.build_df()
-	df = pd.read_csv('../../../../archived/full_df.csv')
+	df = build_master_df.build_df()
+	# df = pd.read_csv('../../../../archived/full_df.csv')
 	return df
 
 
@@ -44,7 +44,7 @@ def shapes():
 	returns:
 		a geopandas shape file
 	"""
-
+	# the shape file is in my local drive, can't uploaded, need to change the path to your workable path or link.
 	shape = gpd.read_file('../../../../archived/tl_2017_us_county/tl_2017_us_county.shp')
 	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
 	shape.NAMELSAD = shape.NAMELSAD.str.upper()
