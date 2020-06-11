@@ -51,9 +51,9 @@ def load_df(target, df_type='Validation', pca=False):
 	print("loading df...")
 	pca = ' PCA' if pca else ''
 
-	feats = jl.load('../output/data/Data - {} Features{}.joblib'.format(
+	feats = jl.load('../output/data/Data - {} Features{} 0.8 0.9.joblib'.format(
 		df_type, pca))
-	targets = jl.load('../output/data/Data - {} Target.joblib'.format(df_type))
+	targets = jl.load('../output/data/Data - {} Target 0.8 0.9.joblib'.format(df_type))
 
 	feats.drop(['date', 'fips'], axis=1, inplace=True, errors='ignore')
 
@@ -276,9 +276,9 @@ def execute_plots(targets, fips_list):
 		county_means = calc_MAE_by_county(targets, training_means, pred_df)
 
 		if p:
-			results = pd.read_csv(join(OUTPUT, 'model_validation_results_with_pca.csv'))
+			results = pd.read_csv(join(OUTPUT, 'model_validation_results_with_pca_average.csv'))
 		else:
-			results = pd.read_csv(join(OUTPUT, 'model_validation_results_without_pca.csv'))
+			results = pd.read_csv(join(OUTPUT, 'model_validation_results_without_pca_average.csv'))
 
 		plot_model_results(results, targets, county_means, outpath, pca=p)
 
@@ -311,8 +311,8 @@ def create_county_MAE():
 
 def mae_bar():
 	fig, ax = plt.subplots()
-	with_pca = pd.read_csv('../output/model_validation_results_with_pca.csv')
-	without_pca = pd.read_csv('../output/model_validation_results_without_pca.csv')
+	with_pca = pd.read_csv('../output/model_validation_results_with_pca_average.csv')
+	without_pca = pd.read_csv('../output/model_validation_results_without_pca_average.csv')
 	with_pca['PCA'] = 'PCA'
 	without_pca['PCA'] = 'No PCA'
 	with_pca_min = with_pca.groupby('Model').min()

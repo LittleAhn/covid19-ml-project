@@ -127,7 +127,7 @@ def mapdf(df):
 	shape = shapes()
 
 	df = df.groupby(['fips','CountyName','StateName']).count()
-	df['sharemissing'] = (df['date']-df['retail_and_recreation_percent_change_from_baseline'])/df['date']
+	df['sharemissing'] = (df['date'].max()-df['retail_and_recreation_percent_change_from_baseline'])/df['date'].max()
 	df = df.merge(shape, left_on=['CountyName'], right_on='NAMELSAD', how="right")
 	gdf = gpd.GeoDataFrame(df, geometry=df.geometry)
 	fig, ax = plt.subplots(1, figsize=(25, 10))
@@ -225,8 +225,8 @@ def mae_bar():
 	"""
 
 	fig, ax = plt.subplots()
-	with_pca = pd.read_csv('../output/model_validation_results_with_pca.csv')
-	without_pca = pd.read_csv('../output/model_validation_results_without_pca.csv')
+	with_pca = pd.read_csv('../output/model_validation_results_with_pca_average.csv')
+	without_pca = pd.read_csv('../output/model_validation_results_without_pca_average.csv')
 	with_pca['PCA'] = 'PCA'
 	without_pca['PCA'] = 'No PCA'
 	with_pca_min = with_pca.groupby('Model').min()
