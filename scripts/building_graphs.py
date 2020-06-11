@@ -213,7 +213,7 @@ def counties_lines(df):
 	df_cook_parks[['Max Temperature']].plot(ax=ax, linewidth=0.8)
 	plt.xlabel("Dates", fontsize=13)
 	plt.ylabel("Percentage on Mobility Change", fontsize=13)
-	plt.title('Mobility Change in Parks, Max Temperatur in Cook County', fontsize=18)
+	plt.title('Mobility Change in Parks, Max Temperature in Cook County', fontsize=18)
 	plt.savefig('../output/plot/data_exploration/park_tmax_line.png')
 	return
 
