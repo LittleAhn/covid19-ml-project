@@ -129,7 +129,8 @@ def map(df):
 	df = df[df.iloc[:, 3:9].isnull().any(axis=1)]
 	df = df.groupby('CountyName').count()
 	df = df.merge(shape, left_on=['CountyName'], right_on='NAMELSAD', how="right")
-	df_inter = df.fillna(df.max())
+	df_inter = df
+	df_inter.iloc[:, :-2].fillna(df_inter.iloc[:, :-2].max(), inplace=True)
 	gdf = gpd.GeoDataFrame(df_inter, geometry=df_inter.geometry)
 	fig, ax = plt.subplots(1, figsize=(25, 10))
 	gdf.plot(column='fips', cmap='Reds', ax=ax, edgecolor='0.8')
@@ -142,7 +143,6 @@ def map(df):
 	plt.ylabel('Latitude', fontsize=15)
 	plt.savefig('../output/plot/missing_data/map.png')
 	return
-
 
 def counties_lines(df):
 	"""
@@ -301,4 +301,8 @@ def mae_map_nopca(gmae):
 	plt.xlabel('Longitude', fontsize=15)
 	plt.ylabel('Latitude', fontsize=15)
 	plt.savefig('../output/plot/MAEs/mae_map_nopca.png')
+
+	
+if __name__ == "__main__":
+	graphs_main()
 
