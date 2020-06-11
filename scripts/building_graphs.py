@@ -15,14 +15,14 @@ def graphs_main():
 
 	df = load()
 	gmae = mae_merged()
-	bar = bars(df)
-	line = lines(df)
-	matrix = matrixs(df)
-	counties_line = counties_lines(df)
-	mae = mae_bar()
-	map_pca = mae_map_pca(gmae[0])
-	map_nopca = mae_map_nopca(gmae[1])
-	maps = map(df)
+	bars(df)
+	lines(df)
+	matrixs(df)
+	counties_lines(df)
+	mae_bar()
+	mae_map_pca(gmae[0])
+	mae_map_nopca(gmae[1])
+	mapdf(df)
 	return
 
 
@@ -34,7 +34,7 @@ def load():
 	"""
 
 	# df = build_master_df.build_df()
-	df = pd.read_csv('../../../../archived/full_df.csv')
+	df = pd.read_csv('../output/data/full_df.csv')
 	return df
 
 
@@ -45,7 +45,7 @@ def shapes():
 		a geopandas shape file
 	"""
 
-	shape = gpd.read_file('../../../../archived/tl_2017_us_county/tl_2017_us_county.shp')
+	shape = gpd.read_file('../data_raw/tl_2017_us_county.shp')
 	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
 	shape.NAMELSAD = shape.NAMELSAD.str.upper()
 	return shape
@@ -117,7 +117,7 @@ def matrixs(df):
 	return
 
 
-def map(df):
+def mapdf(df):
 	"""
 	plots map for missing data over each county, and save save the output 
 	map into .png files in output folder in the directory.
@@ -126,11 +126,11 @@ def map(df):
 	"""
 
 	shape = shapes()
-	df = df[df.iloc[:, 3:9].isnull().any(axis=1)]
-	df = df.groupby('CountyName').count()
+
+	df = df.groupby(['fips','CountyName','StateName']).count()
+	df['sharemissing'] = (df['date']-df['retail_and_recreation_percent_change_from_baseline'])/df['date']
 	df = df.merge(shape, left_on=['CountyName'], right_on='NAMELSAD', how="right")
-	df_inter = df.fillna(df.max())
-	gdf = gpd.GeoDataFrame(df_inter, geometry=df_inter.geometry)
+	gdf = gpd.GeoDataFrame(df, geometry=df.geometry)
 	fig, ax = plt.subplots(1, figsize=(25, 10))
 	gdf.plot(column='fips', cmap='Reds', ax=ax, edgecolor='0.8')
 	ax.set_title('Percentage of Missing Mobility Data by County', fontsize=25)
