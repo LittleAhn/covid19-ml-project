@@ -34,7 +34,7 @@ def load():
 	"""
 
 	# df = build_master_df.build_df()
-	df = pd.read_csv('../output/data/full_df.csv')
+	df = pd.read_csv('../../../../archived/full_df.csv')
 	return df
 
 
@@ -45,7 +45,7 @@ def shapes():
 		a geopandas shape file
 	"""
 
-	shape = gpd.read_file('../data_raw/tl_2017_us_county.shp')
+	shape = gpd.read_file('../../../../archived/tl_2017_us_county/tl_2017_us_county.shp')
 	shape = shape[['GEOID', 'NAMELSAD', 'geometry']]
 	shape.NAMELSAD = shape.NAMELSAD.str.upper()
 	return shape
@@ -125,18 +125,29 @@ def mapdf(df):
 		df: full dataframe
 	"""
 
+	# shape = shapes()
+	# df = df[df.iloc[:, 3:9].isnull().any(axis=1)]
+	# df = df.groupby('CountyName').count()
+	# df = df.merge(shape, left_on=['CountyName'], right_on='NAMELSAD', how="right")
+	# df_inter = df
+	# df_inter.iloc[:, :-2].fillna(df_inter.iloc[:, :-2].max(), inplace=True)
+	# gdf = gpd.GeoDataFrame(df_inter, geometry=df_inter.geometry)
+	# fig, ax = plt.subplots(1, figsize=(25, 10))
+	# gdf.plot(column='fips', cmap='Reds', ax=ax, edgecolor='0.8')
+	# ax.set_title('Percentage of Missing Mobility Data by County', fontsize=25)
+	# sm = plt.cm.ScalarMappable(cmap='Reds', norm=plt.Normalize(vmin=0, vmax=100))
+	# sm._A = []
+	# cbar = fig.colorbar(sm)
+	# ax.axis((-130, -60, 20, 50))
+	# plt.xlabel('Longitude', fontsize=15)
+	# plt.ylabel('Latitude', fontsize=15)
+	# plt.savefig('../output/plot/missing_data/map.png')
 	shape = shapes()
 
 	df = df.groupby(['fips','CountyName','StateName']).count()
 	df['sharemissing'] = (df['date']-df['retail_and_recreation_percent_change_from_baseline'])/df['date']
 	df = df.merge(shape, left_on=['CountyName'], right_on='NAMELSAD', how="right")
-<<<<<<< HEAD
-	df_inter = df
-	df_inter.iloc[:, :-2].fillna(df_inter.iloc[:, :-2].max(), inplace=True)
-	gdf = gpd.GeoDataFrame(df_inter, geometry=df_inter.geometry)
-=======
 	gdf = gpd.GeoDataFrame(df, geometry=df.geometry)
->>>>>>> fa53a9c109fb704100d1a75a607350dd91520c74
 	fig, ax = plt.subplots(1, figsize=(25, 10))
 	gdf.plot(column='fips', cmap='Reds', ax=ax, edgecolor='0.8')
 	ax.set_title('Percentage of Missing Mobility Data by County', fontsize=25)
