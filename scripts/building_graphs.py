@@ -125,23 +125,6 @@ def mapdf(df):
 		df: full dataframe
 	"""
 
-	# shape = shapes()
-	# df = df[df.iloc[:, 3:9].isnull().any(axis=1)]
-	# df = df.groupby('CountyName').count()
-	# df = df.merge(shape, left_on=['CountyName'], right_on='NAMELSAD', how="right")
-	# df_inter = df
-	# df_inter.iloc[:, :-2].fillna(df_inter.iloc[:, :-2].max(), inplace=True)
-	# gdf = gpd.GeoDataFrame(df_inter, geometry=df_inter.geometry)
-	# fig, ax = plt.subplots(1, figsize=(25, 10))
-	# gdf.plot(column='fips', cmap='Reds', ax=ax, edgecolor='0.8')
-	# ax.set_title('Percentage of Missing Mobility Data by County', fontsize=25)
-	# sm = plt.cm.ScalarMappable(cmap='Reds', norm=plt.Normalize(vmin=0, vmax=100))
-	# sm._A = []
-	# cbar = fig.colorbar(sm)
-	# ax.axis((-130, -60, 20, 50))
-	# plt.xlabel('Longitude', fontsize=15)
-	# plt.ylabel('Latitude', fontsize=15)
-	# plt.savefig('../output/plot/missing_data/map.png')
 	shape = shapes()
 
 	df = df.groupby(['fips','CountyName','StateName']).count()
