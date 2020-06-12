@@ -15,12 +15,17 @@ def get_models_from_folder(pca=True):
 	"""
 
 	folder = 'models_predictions_pca' if pca else 'models_predictions_nopca'
-	models = [join(OUTPUT, folder, m) for m in listdir(join(OUTPUT, folder)) if 'Model' in m and '0.9' in m]
+	models = ([join(OUTPUT, folder, m) for m in listdir(join(OUTPUT, folder))
+		if 'Model' in m and '0.9' in m])
 
 	return models
 
 
 def get_test_predictions_files(pca=True):
+	"""
+	returns list of files that have information on predictions
+	for test data	
+	"""
 
 	folder = 'models_predictions_pca' if pca else 'models_predictions_nopca'
 	predictions = [join(OUTPUT, folder, p) for p in listdir(join(OUTPUT, folder)) \
@@ -30,7 +35,9 @@ def get_test_predictions_files(pca=True):
 
 
 def load_test_data(pca=True):
-
+	"""
+	returns df of test features - for pca colnames will be unnamed
+	"""
 
 	flist = [f for f in listdir(DATA) if 'Test' in f]
 	if pca:
@@ -46,14 +53,19 @@ def load_test_data(pca=True):
 
 
 def load_test_target():
-
+	"""
+	returns test target
+	"""
 	return jl.load(join(DATA, 'Data - Test Target.joblib'))
 
 
 
 def generate_prediction(model, test_feats):
 	"""
-	models is a string that refers to the joblib file for the model
+	returns array of predictions for model on test data
+	inputs
+		model: string representing a model joblib file
+		test_feats: df of test features
 	"""
 	print('predicting for', model)
 	model = jl.load(model)
@@ -62,6 +74,14 @@ def generate_prediction(model, test_feats):
 
 
 def generate_all_predictions(model_list, test_feats):
+	"""
+	calculates predictions for all models in folder
+	inputs:
+		model_list: list of model paths
+		test_feats: df of test features
+	returns
+
+	"""
 
 	df = pd.DataFrame
 
@@ -73,6 +93,11 @@ def generate_all_predictions(model_list, test_feats):
 
 
 def execute_all_predictions():
+	"""
+	calculates predictions for pca and non pca data
+	!!!! not working for non-pca - something about the file path name
+	not enough time to fix
+	"""
 
 	for pca in (True, False):
 		test_data = load_test_data(pca)
@@ -84,6 +109,9 @@ def execute_all_predictions():
 
 
 def get_save_path(m):
+	"""
+	returns name for output file as a function of model filename
+	"""
 
 	p = m.replace('Model', 'Predictions')
 	p = p[:p.find('0.8')] + 'Test.joblib'
@@ -92,45 +120,53 @@ def get_save_path(m):
 
 
 def calc_MAE(test_target, predictions, var):
+	"""
+	returns mean absolute error for predictions on test_target
+	var allows for flexibility in target variable
+	test_target: df with observed values for target var
+	"""
 
-	# print('test_target', type(test_target))
-	# print('predictions', type(predictions))
 	mae = abs(test_target[var] - predictions).mean()
 
 	return mae
 
 
 def calc_MAE_by_model(prediction_list, test_target, pca=True):
+	"""
+	returns df with columns for model and MAE
+	inputs:
+		prediction_list: list of prediction filenames
+		test_target: df with observed values for target var
+	"""
 
 	maes = []
 	var = 'retail_and_recreation_percent_change_from_baseline'
 
 	name_cutoff = 33 if pca else 35
 
-	# for p, n in zip(prediction_list, names):
 	for p in prediction_list:
 		prediction = jl.load(p)
 		n = p[name_cutoff:p.find(' - Test')]
 
-		# return prediction
 		mae = calc_MAE(test_target, prediction, var)
 		maes.append((n, mae))
-		# print(mae)
 
 	df = pd.DataFrame.from_records(maes)
 	df.columns = ['Model', 'MAE']
-	# print(df)
 
 	return df
 
 
 def execute_MAE_cal():
+	"""
+	executes process of create MAE for all predictions
+	returns df of MAEs per model and saves csv in output folder
+	"""
 
 	test_target = load_test_target()
 	prediction_list = get_test_predictions_files(pca=True)
 	rv = calc_MAE_by_model(prediction_list, test_target)
 	rv['version'] = rv['Model'].str[-1]
-	# rv['Model'] = rv['Model'].apply(lambda x: type(x['Model']))
 	rv['Model'] = rv['Model'].apply(lambda x: x[:x.find(' - ')])
 
 	print('outputting csv...')
@@ -139,58 +175,10 @@ def execute_MAE_cal():
 	return rv
 
 
-# def execute_test_error():
-
-# 	model = load('../output/models_predictions_pca/KNeighborsRegressor - Model 0.joblib')
-# 	get_test_error(model)
-
-
-# def get_test_error(model):
-
-# 	# Load test data
-# 	test_features = load('../output/data/Data - Test Features PCA.joblib')
-# 	test_target   = load('../output/data/Data - Test Target.joblib')
-# 	results = pd.read_csv("../output/model_validation_results_with_pca.csv")
-# 	print(f"Validated model is {results.loc[0,'Model']} with parameters {results.loc[0,'Parameters']}")
-
-# 	#### TOP KNN RESULT ####
-
-# 	# Identify top model and load it
-# 	# NOTE - This must be changed manually - currently best model is 5-NN
-
-# 	# model = load('../output/models_predictions_pca/KNeighborsRegressor - Model 0.joblib')
-
-# 	# Get test data predictions
-# 	predictions = model.predict(test_features)
-
-# 	# Get error results
-# 	MSE = mean_squared_error(test_target,predictions)
-# 	MAE = mean_absolute_error(test_target,predictions)
-# 	print(f"Mean Squared Error: {MSE:,.5}")
-# 	print(f"Mean Absolute Error: {MAE:,.5}")
-
-# 	#### TOP NON-KNN RESULT ####
-
-# 	# Identify top model and load it
-# 	# NOTE - This must be changed manually - currently best model is Random Forest
-# 	model = load('../output/models_predictions_pca/RandomForestRegressor - Model 4.joblib')
-
-# 	# Get test data predictions
-# 	predictions = model.predict(test_features)
-
-# 	# Get error results
-# 	MSE = mean_squared_error(test_target, predictions)
-# 	MAE = mean_absolute_error(test_target, predictions)
-# 	print(f"Mean Squared Error: {MSE:,.5}")
-# 	print(f"Mean Absolute Error: {MAE:,.5}")
-# 	return MSE, MAE
-
-
 if __name__ == '__main__':
 
-
 	print('whaddup')
-
+	execute_MAE_cal()
 
 
 
