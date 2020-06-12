@@ -1,10 +1,10 @@
 # covid19-ml-project
 
 ### Directory Description
-- scripts: Contains '.py' files that run the model
-- data_raw:  Contains files directly pulled from online sources
-- data_intermediate:  Contains cleaned files ready to be integrated into main data frame
-- output:  Contains folders that describe results from the gridsearch
+- scripts: contains '.py' files that run the model
+- data_raw:  contains files directly pulled from online sources
+- data_intermediate:  contains cleaned files ready to be integrated into main data frame
+- output:  contains folders that describe results from the gridsearch
   - data: dfs used for most recent gridsearches (train, validation, test)
   - plot: plots describing the output of the models
   - models_predictions_nopca:  predictions and model objects for various hyper-parameters
@@ -36,11 +36,10 @@
 **WARNING:  OUR CODE TAKES A LONG TIME TO RUN**
 **PROCEED WITH CAUTION**
 
-0. read our report
+0. read our awesome report
 1. run setup.sh from the main project folder to unzip data files and setup your virtual environment
 2. to recreate files in intermediate data, run create_intermediate_data.populate_intermediate_data() - otherwise simply use the files provided in the zipped folder
-3. to run our grid search, execute either the fit_models_with_pca.py or fit_models_without_pca.py, these files will populate the output certain sections of the out folder with model objects, predictions on validation data, and results on validation data
-4. to test models on our test data, run evaluate_models_on_test.execute_MAE_cal() - this will create files corresponding to the predictions for the test period of each model in the models_predictions_nopca and models_predictions_pca folders
-5. play around with functions in chart_results.py to... chart the results.  execute_plots and execute_test plots can called to track model performance for different fips codes and target variables.  Other functions allow experimenting with different null models as benchmarks.
-6. give us a good grade because even though our model sucked, we tried really hard
+3. to run our grid search, execute either fit_models_with_pca.py or fit_models_without_pca.py, these files will populate  certain sections of the output folder with model objects, predictions, and scores on validation data - **takes a long time**
+4. to score models on our test data, run evaluate_models_on_test.py - this will create files corresponding to the predictions for the test period of each model in the models_predictions_nopca and models_predictions_pca folders
+5. play around with functions in chart_results.py to... chart the results.  execute_plots and execute_test plots can be called to track model performance for different fips codes and target variables.  other functions allow experimenting with different null models as benchmarks
 
