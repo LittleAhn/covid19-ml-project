@@ -4,6 +4,8 @@ import geopandas as gpd
 import read_file
 import import_health
 import datetime
+import warnings
+warnings.filterwarnings('ignore')
 
 def build_df():
 	"""

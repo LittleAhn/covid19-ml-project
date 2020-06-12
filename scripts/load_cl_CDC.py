@@ -51,8 +51,8 @@ def main():
 			df['{}_{}d_avg'.format(var, window)] = df.groupby('countyFIPS')[var].transform(
 				lambda x: x.rolling(window, 1).mean())
 
-	cases['log_cases'] = np.log(cases['cases'])
-	deaths['log_deaths'] = np.log(deaths['deaths'])
+	# cases['log_cases'] = np.log(cases['cases'])
+	# deaths['log_deaths'] = np.log(deaths['deaths'])
 
 	cases.to_csv(join(INT, 'CDC_cases.csv'), index=False)
 	deaths.to_csv(join(INT, 'CDC_deaths.csv'), index=False)
